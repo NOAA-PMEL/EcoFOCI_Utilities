@@ -11,18 +11,19 @@
 #System Stack
 import datetime
 import argparse
+import sys
 
 #Science Stack
 import pymysql
 
 # User defined
-import utilities.ConfigParserLocal as ConfigParserLocal
-import utilities.haversine as sphered
+import io_utils.ConfigParserLocal as ConfigParserLocal
+import calc.haversine as sphered
 
 __author__   = 'Shaun Bell'
 __email__    = 'shaun.bell@noaa.gov'
-__created__  = datetime.datetime(2014, 06, 13)
-__modified__ = datetime.datetime(2014, 06, 13)
+__created__  = datetime.datetime(2016, 9, 28)
+__modified__ = datetime.datetime(2016, 9, 28)
 __version__  = "0.1.0"
 __status__   = "Development"
 
@@ -41,7 +42,7 @@ def connect_to_DB(host, user, password, database, port=3306):
     
 
 
-def read_data(db, cursor, table, startyear):
+def read_data(db, cursor, table, yearrange):
 
     
     """Hardcoded database has following parameters:
@@ -64,7 +65,10 @@ def read_data(db, cursor, table, startyear):
     ,
 
     """
-    sql = "SELECT `id`,`LatitudeDeg`,`LatitudeMin`,`LongitudeDeg`,`LongitudeMin`,`ConsecutiveCastNo`,`UniqueCruiseID`,`GMTDay`,`GMTMonth`,`GMTYear` from `%s` WHERE `GMTYear` >= '%s'" % (table, startyear)
+    sql = ("SELECT `id`,`LatitudeDeg`,`LatitudeMin`,`LongitudeDeg`,"
+            "`LongitudeMin`,`ConsecutiveCastNo`,`UniqueCruiseID`,`GMTDay`,"
+            "`GMTMonth`,`GMTYear` from `{table}` WHERE `GMTYear` BETWEEN '{startyear}' AND '{endyear}'").format(
+                table=table, startyear=yearrange[0], endyear=yearrange[1])
     print sql
     
     result_dic = {}
@@ -110,47 +114,63 @@ def read_mooring(db, cursor, table, MooringID):
 
 """------------------------------------------------------------------------------------"""
 parser = argparse.ArgumentParser(description='Find Closest CTD casts to Mooring Deployment')
-parser.add_argument('MooringID', metavar='MooringID', type=str,
-               help='MooringID 13BSM-2A')               
+          
 parser.add_argument('DistanceThreshold', metavar='DistanceThreshold', type=float,
-               help='Distance From Mooring in Kilometers')
-parser.add_argument('StartYear', metavar='StartYear', type=int,
-               help='Earliest Year to start looking')
-parser.add_argument('-db_moor', '--db_moorings', type=str, help='path to db .pyini file for mooring records')               
-parser.add_argument('-db_ctd', '--db_ctd', type=str, help='path to db .pyini file for ctd records')               
+                help='Distance From Mooring in Kilometers')
+parser.add_argument('YearRange', metavar='YearRange', type=int, nargs=2,
+                help='Range of years to look (eg 2012 2014)')
+parser.add_argument('-db_moor', '--db_moorings', type=str, 
+                help='path to db .pyini file for mooring records')               
+parser.add_argument('-db_ctd', '--db_ctd', type=str, 
+                help='path to db .pyini file for ctd records')               
+parser.add_argument('-MooringID', metavar='--MooringID', type=str,
+                help='MooringID 13BSM-2A')  
+parser.add_argument('-latlon', '--latlon', nargs='+', type=float, 
+                help='use manual lat/lon (decimaldegrees +N,+W)')               
                
 args = parser.parse_args()
 
-#get information from local config file - a json formatted file
-if args.db_moorings:
-    db_config = ConfigParserLocal.get_config(args.db_moorings)
-else:
-    db_config = ConfigParserLocal.get_config('../../db_connection_config_files/db_config_mooring.pyini')
 
-#get db meta information for mooring
-### connect to DB
-(db,cursor) = connect_to_DB(db_config['host'], db_config['user'], db_config['password'], db_config['database'], db_config['port'])
-table = 'mooringdeploymentlogs'
-Mooring_Meta = read_mooring(db, cursor, table, args.MooringID)
-db.close()
+if not args.latlon and not args.MooringID:
+    print "Choose either a mooring location or a lat/lon pairing"
+    sys.exit()
 
-#location = [71 + 13.413/60., 164 + 14.98/60.]
-location = [float(Mooring_Meta[args.MooringID]['Latitude'].split()[0]) + float(Mooring_Meta[args.MooringID]['Latitude'].split()[1])/60.,
-            float(Mooring_Meta[args.MooringID]['Longitude'].split()[0]) + float(Mooring_Meta[args.MooringID]['Longitude'].split()[1])/60.]
+if args.latlon: #manual input of lat/lon
+    location = [args.latlon[0], args.latlon[1]]
+
+if args.MooringID:
+    #get information from local config file - a json/yaml formatted file
+    if args.db_moorings:
+        db_config = ConfigParserLocal.get_config(args.db_moorings)
+    else:
+        db_config = ConfigParserLocal.get_config_yaml('EcoFOCI_config/db_config/db_config_mooring.yaml')
+
+    #get db meta information for mooring
+    ### connect to DB
+    (db,cursor) = connect_to_DB(db_config['host'], db_config['user'], db_config['password'], db_config['database'], db_config['port'])
+    table = 'mooringdeploymentlogs'
+    Mooring_Meta = read_mooring(db, cursor, table, args.MooringID)
+    db.close()
+
+    #location = [71 + 13.413/60., 164 + 14.98/60.]
+    location = [float(Mooring_Meta[args.MooringID]['Latitude'].split()[0]) + float(Mooring_Meta[args.MooringID]['Latitude'].split()[1])/60.,
+                float(Mooring_Meta[args.MooringID]['Longitude'].split()[0]) + float(Mooring_Meta[args.MooringID]['Longitude'].split()[1])/60.]
+
+
 
 threshold = args.DistanceThreshold #km
 
-#get information from local config file - a json formatted file
+#get information from local config file - a json/yaml formatted file
 if args.db_ctd:
     db_config = ConfigParserLocal.get_config(args.db_moorings)
 else:
-    db_config = ConfigParserLocal.get_config('../../db_connection_config_files/db_config_cruises.pyini')
+    db_config = ConfigParserLocal.get_config_yaml('EcoFOCI_config/db_config/db_config_cruises.yaml')
 
 #get db meta information for mooring
 ### connect to DB
 (db,cursor) = connect_to_DB(db_config['host'], db_config['user'], db_config['password'], db_config['database'], db_config['port'])
 table = 'cruisecastlogs'
-cruise_data = read_data(db, cursor, table, args.StartYear)
+cruise_data = read_data(db, cursor, table, args.YearRange)
 db.close()
 
 for index in cruise_data.keys():
