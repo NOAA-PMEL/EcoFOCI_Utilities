@@ -86,10 +86,10 @@ def main():
             except:
                 pass
             try:
-                print ("\t Variable: {0} - {1} : min={2:.3f} \t max={3:.3f} \t mean={4:.3f} \t median={5:.3f}").format(var, 
+                print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
                                         v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
             except:
-                print ("\t Variable: {0} : min={1:.3f} \t max={2:.3f} \t mean={3:.3f} \t median={5:.3f}").format(var, 
+                print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={1:>15.3f} \t max={2:>15.3f} \t mean={3:>15.3f} \t median={5:>15.3f}").format(var, 
                                         np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
         print "\n"
         
@@ -109,8 +109,39 @@ def main():
                 print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
         print "\n\n\n"
     else:
-        #TODO: CTD Profiles
-        print "CTD Files not yet supported - only 1D timeseries"
+        print "\n\n\n\n\n\n"
+        print ("Filename - {0} \n").format(inputpath)
+        for var in vars_dic.keys():
+            v_atts = df.get_vars_attributes(var)
+            try:
+                ncdata[var][ncdata[var]>=1e34] = np.nan
+            except:
+                pass
+            try:
+                print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
+                                        v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+            except:
+                print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={1:>15.3f} \t max={2:>15.3f} \t mean={3:>15.3f} \t median={5:>15.3f}").format(var, 
+                                        np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+        print "\n"
+        
+        ### EPIC standard time conversion - assume time2 dimension exists
+        if 'time2' in vars_dic.keys():
+            print "            EPIC time conversion:\n"
+            print ("\t Cast Time: {:%Y-%m-%d %H:%M:%S}").format(np.min(ncdata['datetime']))
+            try:
+                print ("\t Depth Interval: {0} dBar").format((ncdata['depth'][1] - ncdata['depth'][0]))
+            except:
+                print ("\t Depth Interval: {0} dBar").format((ncdata['dep'][1] - ncdata['dep'][0]))
+
+        print "\nGlobal Attributes:\n"
+        for var in global_atts.keys():
+            try:
+                print ("\t {0}: {1}").format(var,global_atts[var])
+            except UnicodeEncodeError:
+                print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
+        print "\n\n\n"
+
 
     df.close()
 
