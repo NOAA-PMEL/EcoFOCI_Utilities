@@ -237,14 +237,14 @@ if args.ctd and not args.epic:
         for k in vars_dic.keys():
             if k in ['time','time2']:
                 pass
-            elif k in ['lat','lon','latitude','longitude']:
+            elif k in ['lat','lon','latitude','longitude','time01','time012']:
                 line = line + ', ' + str(data[k][0])
             elif k in ['depth','dep']:
-                line = line + ' ' + str(data[k][i])
+                line = line + ', ' + str(data[k][i])
             else:
                 line = line + ', ' + str(data[k][0,i,0,0])
             
-        print global_atts['CAST'] + ', ' + timestr + ', ' + line
+        print global_atts['CAST'] + ', ' + timestr + line
 
 if args.ctd and args.epic:
     ### get and print epic ctd data
@@ -254,7 +254,7 @@ if args.ctd and args.epic:
         for k in vars_dic.keys():
             if k in ['time','time2']:
                 pass
-            elif k in ['lat','lon','latitude','longitude']:
+            elif k in ['lat','lon','latitude','longitude','time01','time012']:
                 header = header + ', ' + k
             elif k in ['depth','dep']:
                 header = header + ', ' + k
@@ -268,7 +268,7 @@ if args.ctd and args.epic:
         for v, k in enumerate(vars_dic):
             if k in ['time','time2']:
                 pass
-            elif k in ['lat','lon','latitude','longitude']:
+            elif k in ['lat','lon','latitude','longitude','time01','time012']:
                 tmp = df.get_vars_attributes(var_name=k)
                 header = header + ', ' + tmp.units
                 try:
@@ -305,14 +305,14 @@ if args.ctd and args.epic:
         for k in vars_dic.keys():
             if k in ['time','time2']:
                 pass
-            elif k in ['lat','lon','latitude','longitude']:
+            elif k in ['lat','lon','latitude','longitude','time01','time012']:
                 line = line + ', ' + str(data[k][0])
             elif k in ['depth','dep']:
-                line = line + ' ' + str(data[k][i])
+                line = line + ', ' + str(data[k][i])
             elif k in args.epic:
                 line = line + ', ' + str(data[k][0,i,0,0])
             
-        print global_atts['CAST'] + ', ' + timestr + ', ' + line
+        print global_atts['CAST'] + ', ' + timestr + line
 
 df.close()
 
