@@ -149,9 +149,9 @@ if args.timeseries and not args.epic:
                 elif k in ['lat','lon','latitude','longitude']:
                     line = line + ', ' + str(data[k][0])
                 elif k in ['dep','depth','depth01']:
-                    line = line + ', ' + str(data[k][3])
+                    line = line + ', ' + str(data[k][0])
                 else:
-                    line = line + ', ' + str(data[k][i,3,0,0])
+                    line = line + ', ' + str(data[k][i,0,0,0])
                 
             print timestr + ', ' + line
 
@@ -159,8 +159,16 @@ if args.timeseries and args.epic:
 
     ### get and print epic timeseries data
     #header
+
+    header = 'time, '
+    for k in vars_dic.keys():
+        if (k in args.epic):
+            header = header + ', ' + k
+    print header + ', index'
+
     if args.units_meta:
-  
+
+
         #units/var attributes
         longname = ', '
         header = 'time, '
@@ -186,10 +194,10 @@ if args.timeseries and args.epic:
                     if k in ['time','time2']:
                         pass
                     elif k in args.epic:
-                        if (data[k][i,3,0,0] >= 1e34):
+                        if (data[k][i,0,0,0] >= 1e34):
                             line = line + ','
                         else:
-                            line = line + ', ' + str(data[k][i,3,0,0])
+                            line = line + ', ' + str(data[k][i,0,0,0])
                 print timestr + ', ' + line + ', ' + str(i)
         else:
             timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
@@ -198,10 +206,10 @@ if args.timeseries and args.epic:
                 if k in ['time','time2']:
                     pass
                 elif k in args.epic:
-                    if (data[k][i,3,0,0] >= 1e34):
+                    if (data[k][i,0,0,0] >= 1e34):
                         line = line + ','
                     else:
-                        line = line + ', ' + str(data[k][i,3,0,0])
+                        line = line + ', ' + str(data[k][i,0,0,0])
             print timestr + ', ' + line + ', ' + str(i)
 
 if args.ctd and not args.epic:

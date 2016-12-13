@@ -7,7 +7,8 @@ Lanczos Filter
 
 """
 
-__all__ = ["low_pass_weights", "spectral_window", "spectral_filtering", "lanzcos35"]
+__all__ = ["low_pass_weights", "spectral_window",
+           "spectral_filtering", "lanzcos35", "lanzcos2p86"]
 
 import numpy as np
 
@@ -37,7 +38,7 @@ def low_pass_weights(window, cutoff):
     
 
     
-def spectral_window(wgts35, n):
+def spectral_window(weights, n):
     
     Ff = np.arange(0,1,2./n)
     if (not np.round(Ff[-1],8) == 1.0 ) and ( n % 2 == 0):
@@ -45,7 +46,7 @@ def spectral_window(wgts35, n):
 
     window = np.zeros(len(Ff))
     for i in np.arange(1,len(Ff)):
-       window[i] = wgts35[0] + 2. * np.sum(wgts35[1:-1] * np.cos(np.arange(1,len(wgts35) - 1. ) * np.pi * Ff[i]))
+       window[i] = weights[0] + 2. * np.sum(weights[1:-1] * np.cos(np.arange(1,len(weights) - 1. ) * np.pi * Ff[i]))
     
     return (window, Ff)
 
@@ -65,10 +66,10 @@ def spectral_filtering(x, window):
 
 """------------------------------------------------------------------------------------"""
 
-def lanzcos35(data, dt, Cf=35. ):
+def lanzcos(data, dt, Cf=35. ):
     """ Input - data (array-like) to be transformed   
                 timestep   
-                cuttoff frequency
+                cuttoff frequency (35 or 2.86)
     
         Output - filtered data (array-like)
         
@@ -79,12 +80,12 @@ def lanzcos35(data, dt, Cf=35. ):
 
 
     window_size = 121. * 2.
-    wgts35 = low_pass_weights(window_size, 1. / Cf ) #filter coefs
+    weights = low_pass_weights(window_size, 1. / Cf ) #filter coefs
     
     Nf = 1. / (2. * (dt * 24.)) #nyquist frequency
     Cf = Cf / Nf
         
-    (window, Ff) = spectral_window(wgts35[len(wgts35) // 2:-1], len(data))
+    (window, Ff) = spectral_window(weights[len(weights) // 2:-1], len(data))
     Ff = Ff * Nf
 
     (y, Cx) = spectral_filtering(data, window)
@@ -93,13 +94,18 @@ def lanzcos35(data, dt, Cf=35. ):
         y = y[:-1]
     return (y)
 
+"""------------------------------------------------------------------------------------"""
+
+
+
 def test():
 
     x = data['data']
     t = data['time'] * 24. 
     dt = (24. * 1.) / (1/data['dt'] )
 
-    y=lanzcos(data,dt,cf)
+    y35=lanzcos(data,dt,35)
+    y2p86=lanzcos(data,dt,2.86)
 
 if __name__ == "__main__":
-    lanzcos35() 
+    test() 
