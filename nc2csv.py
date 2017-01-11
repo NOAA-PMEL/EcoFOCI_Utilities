@@ -21,10 +21,11 @@ import argparse
 #Science Stack
 from netCDF4 import Dataset, date2num
 import numpy as np
+import pandas as pd
 
 #User Stack
 from io_utils import ConfigParserLocal
-from calc.EPIC2Datetime import EPIC2Datetime
+from calc.EPIC2Datetime import EPIC2Datetime, get_UDUNITS
 from io_utils.EcoFOCI_netCDF_read import EcoFOCI_netCDF
 
 __author__   = 'Shaun Bell'
@@ -51,6 +52,8 @@ parser.add_argument("-hd",'--hourly_decimate', action="store_true",
         help='decimate data to hourly ::TIMESERIES ONLY::')
 parser.add_argument("-tmd",'--ten_minute_decimate', action="store_true", 
         help='decimate data to every ten minutes ::TIMESERIES:: only')
+parser.add_argument("-dave",'--daily_average', action="store_true", 
+        help='generate daily max/min/mean data ::TIMESERIES:: only and uses pointerfile')
 args = parser.parse_args()
 
 
@@ -74,10 +77,29 @@ if args.timeseries and args.PointerFile:
     files = pointer_file['mooring_files']
     files_path = [a+b for a,b in zip(MooringDataPath,files)]
 
-    data_var = [pointer_file['EPIC_Key']]
+    data_var = [pointer_file['EPIC_Key'][0]]
 
-    ### cycle through all files, retrieve data and plot
-    for ind, ncfile in enumerate(files_path):
+    if args.daily_average:
+       for ind, ncfile in enumerate(sorted(files_path)):
+
+        ###nc readin/out
+        df = EcoFOCI_netCDF(ncfile)
+        global_atts = df.get_global_atts()
+        vars_dic = df.get_vars()
+        data = df.ncreadfile_dic()
+        df.close()
+
+        nctime = EPIC2Datetime(data['time'],data['time2'])
+        pddata = pd.DataFrame(data[data_var[0]][:,0,0,0],index=nctime)
+
+        df = pddata.resample('D').mean()
+        df['max'] = pddata.resample('D').max()
+        df['min'] = pddata.resample('D').min()
+
+        print df.to_csv()
+
+    else:
+       for ind, ncfile in enumerate(sorted(files_path)):
 
         ###nc readin/out
         df = EcoFOCI_netCDF(ncfile)
