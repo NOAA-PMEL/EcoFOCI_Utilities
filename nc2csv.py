@@ -45,6 +45,7 @@ parser.add_argument("-ctd", '--ctd', action="store_true", help='For CTD profiles
 parser.add_argument("-timeseries", '--timeseries', action="store_true", help='For timeseries profiles')
 parser.add_argument("-header_meta", '--header_meta', action="store_true", help='Add header meta information from nc attributes')
 parser.add_argument("-units_meta", '--units_meta', action="store_true", help='Add ctd identifying info from nc attributes to columns')
+parser.add_argument("-sorted", '--sorted', action="store_true", help='sort input files by alpha')
 parser.add_argument("-EPIC",'--epic', nargs='+', type=str, help='list of desired epic variables')
 parser.add_argument("-subset",'--subset', type=int, 
         help='hour (in 24hour format) to subset data for e.g. 12 gives noon value only ::TIMESERIES:: only')
@@ -79,8 +80,12 @@ if args.timeseries and args.PointerFile:
 
     data_var = [pointer_file['EPIC_Key'][0]]
 
+    if args.sorted:
+        files_path = sorted(files_path)
+
     if args.daily_average:
-       for ind, ncfile in enumerate(sorted(files_path)):
+
+       for ind, ncfile in enumerate(files_path):
 
         ###nc readin/out
         df = EcoFOCI_netCDF(ncfile)
@@ -99,7 +104,7 @@ if args.timeseries and args.PointerFile:
         print df.to_csv()
 
     else:
-       for ind, ncfile in enumerate(sorted(files_path)):
+       for ind, ncfile in enumerate(files_path):
 
         ###nc readin/out
         df = EcoFOCI_netCDF(ncfile)
