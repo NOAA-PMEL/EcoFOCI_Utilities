@@ -40,7 +40,7 @@ __keywords__ = 'netCDF','meta','header', 'csv'
 
 parser = argparse.ArgumentParser(description='Convert .nc to .csv screen output')
 parser.add_argument('infile', metavar='infile', type=str, help='input file path')
-parser.add_argument('-p','--PointerFile', type=str, help='provide a ponter file ::TIMESERIES ONLY::')
+parser.add_argument('-p','--PointerFile', type=str, help='provide a pointer file ::TIMESERIES ONLY::')
 parser.add_argument("-ctd", '--ctd', action="store_true", help='For CTD profiles')
 parser.add_argument("-timeseries", '--timeseries', action="store_true", help='For timeseries profiles')
 parser.add_argument("-header_meta", '--header_meta', action="store_true", help='Add header meta information from nc attributes')
@@ -198,7 +198,7 @@ else:
                         elif k in ['lat','lon','dep','depth','depth01','latitude','longitude']:
                             line = line + ', ' + str(data[k][0])
                         else:
-                            line = line + ', ' + str(data[k][i,3,0,0])
+                            line = line + ', ' + str(data[k][i,0,0,0])
                         
                     print timestr + ', ' + line
 
@@ -213,7 +213,7 @@ else:
                         elif k in ['lat','lon','dep','depth','depth01','latitude','longitude']:
                             line = line + ', ' + str(data[k][0])
                         else:
-                            line = line + ', ' + str(data[k][i,3,0,0])
+                            line = line + ', ' + str(data[k][i,0,0,0])
                         
                     print timestr + ', ' + line
         
