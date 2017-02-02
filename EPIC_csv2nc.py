@@ -54,7 +54,7 @@ parser.add_argument('OutDataFile', metavar='OutDataFile', type=str,
                help='full path to output data file')
 parser.add_argument('config_file_name', metavar='config_file_name', type=str, 
                help='name of config file - eg  epickeys/TRANS_300_epickeys.json')
-parser.add_argument('--latlondep', args=3, type=float, help='latitude, longitude, depth of mooring file')
+parser.add_argument('--latlondep', nargs=3, type=float, help='latitude, longitude, depth of mooring file')
 args = parser.parse_args()
 
 
@@ -67,7 +67,7 @@ if not args.ctd:
 	time1,time2 = np.array(Datetime2EPIC(time_datetime), dtype='f8')
 
 	if args.latlondep:
-		(lat,lon,depth) = latlondep
+		(lat,lon,depth) = args.latlondep
 	else:
 		(lat,lon,depth) = (-9999, -9999,-9999)
 	            

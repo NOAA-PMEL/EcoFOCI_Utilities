@@ -59,6 +59,7 @@ parser.add_argument('config_file_name', metavar='config_file_name', type=str,
                help='name of config file - eg  epickeys/TRANS_300_epickeys.json')
 parser.add_argument('-ctd','--ctd', action="store_true",
                help='File is a CTD file')
+parser.add_argument('--latlondep', nargs=3, type=float, help='latitude, longitude, depth of mooring file')
 
 args = parser.parse_args()
 
@@ -73,6 +74,7 @@ elif args.config_file_name.split('.')[-1] in ['yaml']:
 else:
 	print "config files must have .pyini, .json, or .yaml endings"
 	sys.exit()
+
 
 #cycle through and build data arrays
 #create a "data_dic" and associate the data with an epic key
@@ -91,8 +93,11 @@ if not args.ctd:
 	time1,time2 = np.array(Datetime2EPIC(time_datetime), dtype='f8')
 
 
-	(lat,lon,depth) = (-9999, -9999,-9999)
-	            
+	if args.latlondep:
+		(lat,lon,depth) = args.latlondep
+	else:
+		(lat,lon,depth) = (-9999, -9999,-9999)
+
 	ncinstance = NetCDF_Create_Timeseries(savefile=args.OutDataFile)
 	ncinstance.file_create()
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
