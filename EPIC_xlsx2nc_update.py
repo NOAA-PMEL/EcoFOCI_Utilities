@@ -16,10 +16,14 @@
  Only the chosen variable will be updated.
 
  WorkFlow -- {file}.nc ->  {file}.csv -> {file}.xlsx --> update {file}.nc
+or
+ WorkFlow -- {file}.nc ->  {file}.csv --> update {file}.nc
 
  History:
  --------
  2016-10-05: Update so missing values (NaN) are replaced by 1e35
+ 2017-02-01: Update to ingest .csv files 
+
 
 """
 
@@ -56,16 +60,20 @@ parser.add_argument('ExcelSheet', metavar='ExcelSheet', type=int,
 			   help='Relevant Sheet number in workbook')
 parser.add_argument('NCDataPath', metavar='NCDataPath', type=str, 
                help='full path to netcdf (.nc) file')
+parser.add_argument('-csv','--csv', action="store_true", help='from csv' )
 parser.add_argument('-ek','--EPIC_KEY', nargs='+', type=str, 
 			   help='list of EPIC Keys to transfer (must be header labels in workbook)')
 
 
 args = parser.parse_args()
 
-wb = pd.read_excel(args.ExcelDataPath,sheetname=args.ExcelSheet)
-wb.fillna(1e35,inplace=True)
-
-
+if args.csv:
+	wb = pd.read_csv(args.ExcelDataPath)
+	wb.rename(columns=lambda x: x.strip(),inplace=True)
+	wb.fillna(1e35,inplace=True)
+else:
+	wb = pd.read_excel(args.ExcelDataPath,sheetname=args.ExcelSheet)
+	wb.fillna(1e35,inplace=True)
 
 #cycle through and build data arrays
 #create a "data_dic" and associate the data with an epic key based on the header line
