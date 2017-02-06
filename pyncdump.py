@@ -87,10 +87,10 @@ def main():
                 pass
             try:
                 print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
-                                        v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+                                        v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
             except:
                 print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
-                                        '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+                                        '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
         print "\n"
         
         ### EPIC standard time conversion - assume time2 dimension exists
@@ -119,10 +119,10 @@ def main():
                 pass
             try:
                 print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
-                                        v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+                                        v_atts.long_name, np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
             except:
                 print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
-                                        '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.median(ncdata[var]))
+                                        '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
         print "\n"
         
         ### EPIC standard time conversion - assume time2 dimension exists
