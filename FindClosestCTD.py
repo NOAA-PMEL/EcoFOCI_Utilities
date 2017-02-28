@@ -45,29 +45,12 @@ def connect_to_DB(host, user, password, database, port=3306):
 def read_data(db, cursor, table, yearrange):
 
     
-    """Hardcoded database has following parameters:
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-    `Vessel` varchar(30) DEFAULT NULL COMMENT 'Full Name (e.g.Dyson)',
-    `CruiseID` varchar(12) NOT NULL DEFAULT '' COMMENT 'ssYY## (where s is ship, Y is year, # is sequential cruise number)',
-    `Project_Leg` enum('','L1','L2','L3','L4') DEFAULT '' COMMENT 'L2/L2',
-    `UniqueCruiseID` varchar(22) DEFAULT NULL COMMENT 'CruiseID + Leg',
-    `Project` text COMMENT 'project name',
-    `StationNo_altname` text,
-    `ConsecutiveCastNo` varchar(6) NOT NULL DEFAULT '' COMMENT 'CTD001',
-    `LatitudeDeg` int(4) NOT NULL COMMENT '(+/N , -/S)',
-    `LatitudeMin` float NOT NULL COMMENT 'decimal seconds',
-    `LongitudeDeg` int(3) NOT NULL COMMENT '(+/W, -/E)',
-    `LongitudeMin` float NOT NULL COMMENT 'decimal seconds',
-    `GMTDay` int(2) NOT NULL COMMENT '0-31',
-    `GMTMonth` varchar(3) NOT NULL DEFAULT '' COMMENT 'mmm',
-    `GMTYear` int(4) NOT NULL COMMENT 'yyyy',
-    `GMTTime` time NOT NULL DEFAULT '00:00:00' COMMENT 'hh:mm:ss',
-    ,
+    """
 
     """
     sql = ("SELECT `id`,`LatitudeDeg`,`LatitudeMin`,`LongitudeDeg`,"
             "`LongitudeMin`,`ConsecutiveCastNo`,`UniqueCruiseID`,`GMTDay`,"
-            "`GMTMonth`,`GMTYear` from `{table}` WHERE `GMTYear` BETWEEN '{startyear}' AND '{endyear}'").format(
+            "`GMTMonth`,`GMTYear`,`MaxDepth` from `{table}` WHERE `GMTYear` BETWEEN '{startyear}' AND '{endyear}'").format(
                 table=table, startyear=yearrange[0], endyear=yearrange[1])
     print sql
     
@@ -180,6 +163,6 @@ for index in cruise_data.keys():
     Distance2Station = sphered.distance(location,destination)
 
     if Distance2Station <= threshold:
-        print ("Cast {0} on Cruise {1} is {2} km away - {3}-{4}-{5}").format(cruise_data[index]['ConsecutiveCastNo'],\
+        print ("Cast {0} on Cruise {1} is {2} km away - {3}-{4}-{5} and {6}m deep").format(cruise_data[index]['ConsecutiveCastNo'],\
                 cruise_data[index]['UniqueCruiseID'],Distance2Station,cruise_data[index]['GMTYear'],\
-                cruise_data[index]['GMTMonth'],cruise_data[index]['GMTDay'])
+                cruise_data[index]['GMTMonth'],cruise_data[index]['GMTDay'],cruise_data[index]['MaxDepth'])
