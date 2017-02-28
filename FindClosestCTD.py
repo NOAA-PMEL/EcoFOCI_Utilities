@@ -68,7 +68,7 @@ def read_data(db, cursor, table, yearrange):
         # Fetch all the rows in a list of lists.
         results = cursor.fetchall()
         for row in results:
-            result_dic[row['id']] ={keys: row[keys] for val, keys in enumerate(row.keys())} 
+            result_dic[row['UniqueCruiseID']+'_'+row['ConsecutiveCastNo']] ={keys: row[keys] for val, keys in enumerate(row.keys())} 
         return (result_dic)
     except:
         print "Error: unable to fecth data"
@@ -156,7 +156,7 @@ table = 'cruisecastlogs'
 cruise_data = read_data(db, cursor, table, args.YearRange)
 db.close()
 
-for index in cruise_data.keys():
+for index in sorted(cruise_data.keys()):
 
     destination = [cruise_data[index]['LatitudeDeg']+cruise_data[index]['LatitudeMin']/60.,\
                     cruise_data[index]['LongitudeDeg']+cruise_data[index]['LongitudeMin']/60.]    
