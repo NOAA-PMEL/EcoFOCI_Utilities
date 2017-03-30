@@ -254,9 +254,9 @@ else:
                         elif k in ['lat','lon','latitude','longitude']:
                             line = line + ', ' + str(data[k][0])
                         elif k in ['dep','depth','depth01']:
-                            line = line + ', ' + str(data[k][3])
+                            line = line + ', ' + str(data[k][0])
                         else:
-                            line = line + ', ' + str(data[k][i,3,0,0])
+                            line = line + ', ' + str(data[k][i,0,0,0])
                         
                     print timestr + ', ' + line
             else:
