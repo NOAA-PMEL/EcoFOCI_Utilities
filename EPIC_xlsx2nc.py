@@ -68,9 +68,9 @@ wb.rename(columns=lambda x: x.strip(), inplace=True)
 wb.fillna(1E+35, inplace=True)
 
 if args.config_file_name.split('.')[-1] in ['json','pyini']:
-	EPIC_VARS_dict = get_config('EcoFOCI_config/' + args.config_file_name)
+	EPIC_VARS_dict = get_config(args.config_file_name)
 elif args.config_file_name.split('.')[-1] in ['yaml']:
-	EPIC_VARS_dict = get_config_yaml('EcoFOCI_config/' + args.config_file_name)
+	EPIC_VARS_dict = get_config_yaml(args.config_file_name)
 else:
 	print "config files must have .pyini, .json, or .yaml endings"
 	sys.exit()

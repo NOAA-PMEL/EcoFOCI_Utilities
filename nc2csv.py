@@ -165,7 +165,6 @@ if args.timeseries and args.PointerFile:
                 print timestr + ', ' + line + ', ' + str(i)
         df.close()
 
-
 elif not args.timeseries and args.PointerFile:
     print "Only capable of dealing with timeseries pointer files"
 
@@ -241,7 +240,6 @@ else:
 
             print longname
             print header
-
 
         for i, val in enumerate(data['time']):
             if args.subset:
