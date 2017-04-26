@@ -10,7 +10,6 @@
 
  2016-08-10: transfer routine to EcoFOCI_MooringAnalysis package to simplify and unify
 
- 2017-01-09:
 """
 
 #System Stack
