@@ -104,6 +104,8 @@ if len(ncdata['time']) > 1:
             print ("\t {0}: {1}").format(var,global_atts[var])
         except UnicodeEncodeError:
             print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
+    print "\n"
+    print("Variables in file: {list}".format(list=",".join(vars_dic.keys())))
     print "\n\n\n"
 else:
     print "\n\n\n\n\n\n"
@@ -137,8 +139,9 @@ else:
             print ("\t {0}: {1}").format(var,global_atts[var])
         except UnicodeEncodeError:
             print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
+    print "\n"
+    print("Variables in file: {list}".format(list=",".join(vars_dic.keys())))
     print "\n\n\n"
-
 
 df.close()
 
