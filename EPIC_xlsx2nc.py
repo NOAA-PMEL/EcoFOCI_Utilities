@@ -67,6 +67,8 @@ wb = pd.read_excel(args.ExcelDataPath,sheetname=args.ExcelSheet, na_values=[1E+3
 wb.rename(columns=lambda x: x.strip(), inplace=True)
 wb.fillna(1E+35, inplace=True)
 
+print wb.info()
+
 if args.config_file_name.split('.')[-1] in ['json','pyini']:
 	EPIC_VARS_dict = get_config(args.config_file_name)
 elif args.config_file_name.split('.')[-1] in ['yaml']:
@@ -85,6 +87,7 @@ data_dic = {}
 for column in wb.keys():
 	print "{column} in file".format(column=column)
 	data_dic[column] = wb[column].to_dict().values()
+
 
 if not args.ctd:
 	### Time should be consistent in all files as a datetime object
