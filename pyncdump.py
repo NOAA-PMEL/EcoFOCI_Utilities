@@ -74,7 +74,7 @@ if 'time2' in vars_dic.keys():
 ###screen output
 
 if len(ncdata['time']) > 1:
-    print "\n\n\n\n\n\n"
+    print ("\n\n\n\n\n\n")
     print ("Filename - {0} \n").format(inputpath)
     for var in vars_dic.keys():
         v_atts = df.get_vars_attributes(var)
@@ -88,27 +88,27 @@ if len(ncdata['time']) > 1:
         except:
             print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
                                     '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
-    print "\n"
+    print ("\n")
     
     ### EPIC standard time conversion - assume time2 dimension exists
     if 'time2' in vars_dic.keys():
-        print "            EPIC time conversion:\n"
+        print ("            EPIC time conversion:\n")
         print ("\t Start Time: {:%Y-%m-%d %H:%M:%S}").format(np.min(ncdata['datetime']))
         print ("\t End Time: {:%Y-%m-%d %H:%M:%S}").format(np.max(ncdata['datetime']))
         print ("\t DeltaT based on first two points: {0} seconds").format((ncdata['datetime'][1] - ncdata['datetime'][0]).seconds)
         print ("\t DeltaT based on last two points: {0} seconds").format((ncdata['datetime'][-1] - ncdata['datetime'][-2]).seconds)
 
-    print "\nGlobal Attributes:\n"
+    print ("\nGlobal Attributes:\n")
     for var in global_atts.keys():
         try:
             print ("\t {0}: {1}").format(var,global_atts[var])
         except UnicodeEncodeError:
             print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
-    print "\n"
+    print ("\n")
     print("Variables in file: {list}".format(list=",".join(vars_dic.keys())))
-    print "\n\n\n"
+    print ("\n\n\n")
 else:
-    print "\n\n\n\n\n\n"
+    print ("\n\n\n\n\n\n")
     print ("Filename - {0} \n").format(inputpath)
     for var in vars_dic.keys():
         v_atts = df.get_vars_attributes(var)
@@ -122,26 +122,26 @@ else:
         except:
             print ("\tVariable: {1}\n\t\t Epic Key: {0:_<10} :\t min={2:>15.3f} \t max={3:>15.3f} \t mean={4:>15.3f} \t median={5:>15.3f}").format(var, 
                                     '',np.nanmin(ncdata[var]), np.nanmax(ncdata[var]), np.nanmean(ncdata[var]), np.nanmedian(ncdata[var]))
-    print "\n"
+    print ("\n")
     
     ### EPIC standard time conversion - assume time2 dimension exists
     if 'time2' in vars_dic.keys():
-        print "            EPIC time conversion:\n"
+        print ("            EPIC time conversion:\n")
         print ("\t Cast Time: {:%Y-%m-%d %H:%M:%S}").format(np.min(ncdata['datetime']))
         try:
             print ("\t Depth Interval: {0} dBar").format((ncdata['depth'][1] - ncdata['depth'][0]))
         except:
             print ("\t Depth Interval: {0} dBar").format((ncdata['dep'][1] - ncdata['dep'][0]))
 
-    print "\nGlobal Attributes:\n"
+    print ("\nGlobal Attributes:\n")
     for var in global_atts.keys():
         try:
             print ("\t {0}: {1}").format(var,global_atts[var])
         except UnicodeEncodeError:
             print ("\t {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
-    print "\n"
-    print("Variables in file: {list}".format(list=",".join(vars_dic.keys())))
-    print "\n\n\n"
+    print ("\n")
+    print ("Variables in file: {list}").format(list=",".join(vars_dic.keys()))
+    print ("\n\n\n")
 
 df.close()
 
