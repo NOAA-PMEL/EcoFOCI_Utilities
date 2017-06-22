@@ -163,6 +163,6 @@ for index in sorted(cruise_data.keys()):
     Distance2Station = sphered.distance(location,destination)
 
     if Distance2Station <= threshold:
-        print ("Cast {0} on Cruise {1} is {2} km away - {3}-{4}-{5} and {6}m deep").format(cruise_data[index]['ConsecutiveCastNo'],\
+        print ("Cast {0} on Cruise {1} is {2:3.2f} km away - {3}-{4}-{5} and {6}m deep").format(cruise_data[index]['ConsecutiveCastNo'],\
                 cruise_data[index]['UniqueCruiseID'],Distance2Station,cruise_data[index]['GMTYear'],\
                 cruise_data[index]['GMTMonth'],cruise_data[index]['GMTDay'],cruise_data[index]['MaxDepth'])
