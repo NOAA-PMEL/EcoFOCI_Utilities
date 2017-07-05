@@ -1008,26 +1008,29 @@ class CF_NC_2D(object):
         self.rootgrpID.createDimension( self.dim_vars[3], 1 ) #lon
         
         
-    def variable_init(self, nchandle, udunits_time_str='days since 1900-1-1' ):
+    def variable_init(self, EPIC_VARS_dict, udunits_time_str='days since 1900-1-1' ):
         """
-        built from knowledge about previous file
+        EPIC keys:
+            passed in as a dictionary (similar syntax as json data file)
+            The dictionary keys are what defines the variable names.
         """
-        
+        #exit if the variable dictionary is not passed
+        if not bool(EPIC_VARS_dict):
+            raise RuntimeError('Empty EPIC Dictionary is passed to variable_init.')
+
         #build record variable attributes
         rec_vars, rec_var_name, rec_var_longname = [], [], []
         rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
-        
-        for v_name in nchandle.variables.keys():
-            print v_name
-            if not v_name in ['time','time2','depth','lat','lon','latitude','longitude']:
-                print "Copying attributes for {0}".format(v_name)
-                rec_vars.append( v_name )
-                rec_var_name.append( nchandle.variables[v_name].name )
-                rec_var_longname.append( nchandle.variables[v_name].long_name )
-                rec_var_generic_name.append( nchandle.variables[v_name].generic_name )
-                rec_var_units.append( nchandle.variables[v_name].units )
-                rec_var_FORTRAN.append( nchandle.variables[v_name].FORTRAN_format )
-                rec_var_epic.append( nchandle.variables[v_name].epic_code )
+
+        #cycle through epic dictionary and create nc parameters
+        for evar in EPIC_VARS_dict.keys():
+            rec_vars.append(evar)
+            rec_var_name.append( EPIC_VARS_dict[evar]['name'] )
+            rec_var_longname.append( EPIC_VARS_dict[evar]['longname'] )
+            rec_var_generic_name.append( EPIC_VARS_dict[evar]['generic_name'] )
+            rec_var_units.append( EPIC_VARS_dict[evar]['units'] )
+            rec_var_FORTRAN.append( EPIC_VARS_dict[evar]['fortran'] )
+            rec_var_epic.append( EPIC_VARS_dict[evar]['EPIC_KEY'] )
 
         
         rec_vars = ['time','depth','lat','lon'] + rec_vars
@@ -1038,7 +1041,7 @@ class CF_NC_2D(object):
         rec_var_FORTRAN = ['', '', '', ''] + rec_var_FORTRAN
         rec_var_units = [udunits_time_str,'dbar','degree_north','degree_west'] + rec_var_units
         rec_var_type= ['f8'] + ['f4' for spot in rec_vars[1:]]
-        rec_var_strtype= ['EVEN', 'EVEN', 'EVEN', 'EVEN'] + ['' for spot in rec_vars[4:]]
+        rec_var_strtype= ['EVEN', 'UNEVEN', 'EVEN', 'EVEN'] + ['' for spot in rec_vars[4:]]
         rec_epic_code = [624,1,500,501] + rec_var_epic
         
         var_class = []
@@ -1073,15 +1076,28 @@ class CF_NC_2D(object):
         self.var_class[2][:] = latitude
         self.var_class[3][:] = longitude #PMEL standard direction
 
-    def add_data(self, data=None):
-        """ """
+    def add_data(self, EPIC_VARS_dict, data_dic=None, missing_values=1e35):
+        """
+            using the same dictionary to define the variables, and a new dictionary
+                that associates each data array with an epic key, cycle through and populate
+                the desired variables.  If a variable is defined in the epic keys but not passed
+                to the add_data routine, it should be populated with missing data
+        """
+        #exit if the variable dictionary is not passed
+        if not bool(EPIC_VARS_dict):
+            raise RuntimeError('Empty EPIC Dictionary is passed to add_data.')
         
-        for ind, varname in enumerate(data.keys()):
-            if not varname in ['time','time2','lat','lon','depth','latitude','longitude']:
-                di = self.rec_vars.index(varname)
-                self.var_class[di][:] = data[varname][:]
-        
+        #cycle through EPIC_Vars and populate with data - this is a comprehensive list of 
+        # all variables expected
+        # if no data is passed but an epic dictionary is, complete routine leaving variables
+        #  with missing data if not found
 
+        for EPICdic_key in EPIC_VARS_dict.keys():
+            di = self.rec_vars.index(EPICdic_key)
+            try:
+                self.var_class[di][:] = data_dic[EPICdic_key]
+            except KeyError:
+                self.var_class[di][:] = missing_values
         
     def add_history(self, new_history):
         """Adds timestamp (UTC time) and history to existing information"""
