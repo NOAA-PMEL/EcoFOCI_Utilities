@@ -45,6 +45,7 @@ parser.add_argument("-timeseries", '--timeseries', action="store_true", help='Fo
 parser.add_argument("-header_meta", '--header_meta', action="store_true", help='Add header meta information from nc attributes')
 parser.add_argument("-units_meta", '--units_meta', action="store_true", help='Add ctd identifying info from nc attributes to columns')
 parser.add_argument("-sorted", '--sorted', action="store_true", help='sort input files by alpha')
+parser.add_argument("-non_epic", '--non_epic', action="store_true", help='non_epic time files')
 parser.add_argument("-EPIC",'--epic', nargs='+', type=str, help='list of desired epic variables')
 parser.add_argument("-subset",'--subset', type=int, 
         help='hour (in 24hour format) to subset data for e.g. 12 gives noon value only ::TIMESERIES:: only')
@@ -444,3 +445,28 @@ else:
 
     df.close()
 
+if args.non_epic:
+    ### get and print epic timeseries data
+    header = ''
+    for k in vars_dic.keys():
+        header = header + ', ' + k
+    print header
+
+    #units/var attributes
+    longname = ', '
+    for v, k in enumerate(vars_dic):
+        tmp = df.get_vars_attributes(var_name=k)
+        try:
+            longname = longname + ', ' + tmp.long_name
+        except:
+            longname = longname + ', '
+
+    print longname
+    print header
+
+    for i, val in enumerate(data['N_LEVELS']):
+        line = ''
+        for k in vars_dic.keys():
+            line = line + ', ' + str(data[k][i,0,0,0])
+            
+        print timestr + ', ' + line
