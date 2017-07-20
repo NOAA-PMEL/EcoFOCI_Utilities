@@ -98,9 +98,10 @@ if args.timeseries and args.PointerFile:
         pddata = pd.DataFrame(data[data_var[0]][:,0,0,0],index=nctime)
 
         df = pddata.resample('D').mean()
-        df['max'] = pddata.resample('D').max()
-        df['min'] = pddata.resample('D').min()
+        #df['max'] = pddata.resample('D').max()
+        #df['min'] = pddata.resample('D').min()
 
+        print ncfile
         print df.to_csv()
 
     else:
