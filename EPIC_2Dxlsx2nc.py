@@ -64,7 +64,7 @@ args = parser.parse_args()
 
 wb_temp = pd.read_excel(args.ExcelDataPath,sheetname='Temperature', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_temp.rename(columns=lambda x: x.strip(), inplace=True)
-wb_temp.fillna(1E+35, inplace=True)
+#wb_temp.fillna(1E+35, inplace=True)
 
 wb_pres = pd.read_excel(args.ExcelDataPath,sheetname='Pressure', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_pres.rename(columns=lambda x: x.strip(), inplace=True)
