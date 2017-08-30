@@ -59,20 +59,32 @@ parser.add_argument('ExcelDataPath', metavar='ExcelDataPath', type=str,
 parser.add_argument('OutDataFile', metavar='OutDataFile', type=str, 
                help='full path to output data file')
 parser.add_argument('--latlon', nargs=2, type=float, help='latitude, longitude of mooring file')
+parser.add_argument('-fill_na','--fill_na', action="store_true", help='fill nan with 1e35')
 
 args = parser.parse_args()
 
 wb_temp = pd.read_excel(args.ExcelDataPath,sheetname='Temperature', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_temp.rename(columns=lambda x: x.strip(), inplace=True)
+<<<<<<< Updated upstream
 wb_temp.fillna(1E+35, inplace=True)
+=======
+<<<<<<< Updated upstream
+#wb_temp.fillna(1E+35, inplace=True)
+=======
+if args.fill_na:
+	wb_temp.fillna(1E+35, inplace=True)
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 wb_pres = pd.read_excel(args.ExcelDataPath,sheetname='Pressure', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_pres.rename(columns=lambda x: x.strip(), inplace=True)
-wb_pres.fillna(1E+35, inplace=True)
+if args.fill_na:
+	wb_pres.fillna(1E+35, inplace=True)
 
 wb_sal = pd.read_excel(args.ExcelDataPath,sheetname='Salinity', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_sal.rename(columns=lambda x: x.strip(), inplace=True)
-wb_sal.fillna(1E+35, inplace=True)
+if args.fill_na:
+	wb_sal.fillna(1E+35, inplace=True)
 
 wb_date = pd.read_excel(args.ExcelDataPath,sheetname='DateTime',
 						na_values=[1E+35,'1E+35',' 1E+35'],
