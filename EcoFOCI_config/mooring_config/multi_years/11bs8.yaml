@@ -1,0 +1,44 @@
+MooringID: 2011 M8
+mooring_data_path:
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+- /Users/bell/ecoraid/2011/Moorings/
+mooring_files:
+- 11bs8a/final_data/11bs8a_s37_0031m.nc
+- 11bs8a/final_data/11bs8a_s37_0055m.nc
+- 11bs8a/final_data/11bs8a_s39_0023m.nc
+- 11bs8a/final_data/11bs8a_s39_0027m.nc
+- 11bs8a/final_data/11bs8a_s39_0035m.nc
+- 11bs8a/final_data/11bs8a_s39_0040m.nc
+- 11bs8a/final_data/11bs8a_s39_0045m.nc
+- 11bs8a/final_data/11bs8a_s39_0050m.nc
+- 11bs8a/final_data/11bs8a_s39_0060m.nc
+- 11bs8a/final_data/11bs8a_s39_0067m.nc
+- 11bs8a/final_data/11bs8a_sc_0021m.nc
+
+dtype: qcd
+EPIC_Key: 
+- T_20
+# update the plotting routine to take a list value
+Ylabel: Temperature
+Date_Ticks: multi_year
+plot_stylesheet: seaborn-poster
+output_type: png
+EPIC_Key_ctd: T_28
+ctd_data_path:
+- ''
+ctd_files:
+- ''
+dtype: mooring

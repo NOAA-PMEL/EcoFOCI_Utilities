@@ -1,16 +1,16 @@
 MooringID: 2006 M8
 mooring_data_path:
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
-- /Volumes/WDC_internal/Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
+- /Users/bell/ecoraid/2006/Moorings/
 mooring_files:
 - 06bs8a/final_data/06bs8a_s37_0032m.nc
 - 06bs8a/final_data/06bs8a_s37_0056m.nc
