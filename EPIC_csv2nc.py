@@ -32,7 +32,7 @@ import numpy as np
 import pandas as pd
 
 #User defined Stack
-from io_utils.ConfigParserLocal import get_config, get_config_yaml
+from io_utils.ConfigParserLocal import get_config
 from io_utils.EcoFOCI_netCDF_write import NetCDF_Create_Timeseries, NetCDF_Create_Profile
 from calc.EPIC2Datetime import EPIC2Datetime, Datetime2EPIC
 

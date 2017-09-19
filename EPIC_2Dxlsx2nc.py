@@ -33,7 +33,7 @@ import numpy as np
 import pandas as pd
 
 #User defined Stack
-from io_utils.ConfigParserLocal import get_config, get_config_yaml
+from io_utils.ConfigParserLocal import get_config
 from io_utils.EcoFOCI_netCDF_write import CF_NC_2D
 from calc.EPIC2Datetime import EPIC2Datetime, Datetime2EPIC, get_UDUNITS
 
@@ -86,7 +86,7 @@ datetime = [dt64todt(x) for x in wb_date.Date_Time.values]
 wb_coords = pd.read_excel(args.ExcelDataPath,sheetname='Coords', na_values=[1E+35,'1E+35',' 1E+35'])
 
 
-EPIC_VARS_dict = get_config_yaml('EcoFOCI_config/epickeys/STP_epickeys.yaml')
+EPIC_VARS_dict = get_config('EcoFOCI_config/epickeys/STP_epickeys.yaml','yaml')
 
 
 #cycle through and build data arrays

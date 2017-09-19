@@ -17,7 +17,6 @@ import datetime
 import argparse
 
 #User Stack
-from io_utils import ConfigParserLocal
 from calc.EPIC2Datetime import EPIC2Datetime, get_UDUNITS
 from io_utils.EcoFOCI_netCDF_read import EcoFOCI_netCDF
 

@@ -124,9 +124,9 @@ if args.latlon: #manual input of lat/lon
 if args.MooringID:
     #get information from local config file - a json/yaml formatted file
     if args.db_moorings:
-        db_config = ConfigParserLocal.get_config(args.db_moorings)
+        db_config = ConfigParserLocal.get_config(args.db_moorings,'json')
     else:
-        db_config = ConfigParserLocal.get_config_yaml('EcoFOCI_config/db_config/db_config_mooring.yaml')
+        db_config = ConfigParserLocal.get_config('EcoFOCI_config/db_config/db_config_mooring.yaml','yaml')
 
     #get db meta information for mooring
     ### connect to DB
@@ -145,9 +145,9 @@ threshold = args.DistanceThreshold #km
 
 #get information from local config file - a json/yaml formatted file
 if args.db_ctd:
-    db_config = ConfigParserLocal.get_config(args.db_moorings)
+    db_config = ConfigParserLocal.get_config(args.db_moorings,'json')
 else:
-    db_config = ConfigParserLocal.get_config_yaml('EcoFOCI_config/db_config/db_config_cruises.yaml')
+    db_config = ConfigParserLocal.get_config('EcoFOCI_config/db_config/db_config_cruises.yaml','yaml')
 
 #get db meta information for mooring
 ### connect to DB
