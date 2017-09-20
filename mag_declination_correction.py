@@ -28,7 +28,6 @@ import pymysql
 
 
 # User Stack
-import io_utils.ConfigParserLocal as ConfigParserLocal
 import calc.geomag.geomag.geomag as geomag
 from io_utils.EcoFOCI_db_io import EcoFOCI_db_mooring
 
