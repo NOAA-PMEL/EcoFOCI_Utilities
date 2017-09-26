@@ -24,8 +24,6 @@ import datetime
 
 # System Stack
 import argparse
-import pymysql
-
 
 # User Stack
 import calc.geomag.geomag.geomag as geomag
@@ -72,8 +70,8 @@ args = parser.parse_args()
 if args.MooringID:
     #get information from local config file - a json formatted file
     EcoFOCI_db = EcoFOCI_db_mooring()
-    config_file = '/Volumes/WDC_internal/Users/bell/Programs/Python/db_connection_config_files/db_config_mooring.pyini'
-    (db,cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file)
+    config_file = 'EcoFOCI_config/db_config/db_config_mooring.yaml'
+    (db,cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file, ftype='yaml')
 
     Mooring_Meta = EcoFOCI_db.read_mooring_summary(table='mooringdeploymentlogs', 
                                            mooringid=args.MooringID)
