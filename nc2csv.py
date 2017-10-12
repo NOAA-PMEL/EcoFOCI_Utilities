@@ -78,7 +78,7 @@ if args.timeseries and args.PointerFile:
     files = pointer_file['mooring_files']
     files_path = [a+b for a,b in zip(MooringDataPath,files)]
 
-    data_var = [pointer_file['EPIC_Key'][0]]
+    data_var = [pointer_file['EPIC_Key']]
 
     if args.sorted:
         files_path = sorted(files_path)
