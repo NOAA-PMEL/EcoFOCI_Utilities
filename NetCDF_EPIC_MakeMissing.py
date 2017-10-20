@@ -30,6 +30,7 @@ __keywords__ = 'netCDF','meta','header', 'csv'
 
 parser = argparse.ArgumentParser(description='Make EPIC Parameter in given file 1e35')
 parser.add_argument('ncfile', metavar='ncfile', type=str, help='input file path')
+parser.add_argument('-timeseries','--timeseries', action="store_true", help='flag if timeseries')
 parser.add_argument("-EPIC",'--epic', nargs='+', type=str, help='list of desired epic variables')
 
 
@@ -42,19 +43,35 @@ vars_dic = df.get_vars()
 ncdata = df.ncreadfile_dic()
 
 for EPIC_var in args.epic:
-	try:
-		nchandle.variables[EPIC_var][0,:,0,0] = (nchandle.variables[EPIC_var][0,:,0,0] * 0 ) +1e35
-		edithist = "{EPIC_var} made missing".format(EPIC_var=EPIC_var)
+	if args.timeseries:
+		try:
+			nchandle.variables[EPIC_var][:,0,0,0] = (nchandle.variables[EPIC_var][:,0,0,0] * 0 ) +1e35
+			edithist = "{EPIC_var} made missing".format(EPIC_var=EPIC_var)
 
-		print "adding history attribute"
-		if not 'History' in global_atts.keys():
-		    histtime=datetime.datetime.utcnow()
-		    nchandle.setncattr('History','{histtime:%B %d, %Y %H:%M} UTC - {history} '.format(histtime=histtime,history=edithist))
-		else:
-		    histtime=datetime.datetime.utcnow()
-		    nchandle.setncattr('History', global_atts['History'] +'\n'+ '{histtime:%B %d, %Y %H:%M} UTC - {history}'.format(histtime=histtime,history=edithist))
+			print "adding history attribute"
+			if not 'History' in global_atts.keys():
+			    histtime=datetime.datetime.utcnow()
+			    nchandle.setncattr('History','{histtime:%B %d, %Y %H:%M} UTC - {history} '.format(histtime=histtime,history=edithist))
+			else:
+			    histtime=datetime.datetime.utcnow()
+			    nchandle.setncattr('History', global_atts['History'] +'\n'+ '{histtime:%B %d, %Y %H:%M} UTC - {history}'.format(histtime=histtime,history=edithist))
 
-	except:
-		print("EPIC Key: {ek} not found".format(ek=EPIC_var))
+		except:
+			print("EPIC Key: {ek} not found".format(ek=EPIC_var))
+	else:
+		try:
+			nchandle.variables[EPIC_var][0,:,0,0] = (nchandle.variables[EPIC_var][0,:,0,0] * 0 ) +1e35
+			edithist = "{EPIC_var} made missing".format(EPIC_var=EPIC_var)
+
+			print "adding history attribute"
+			if not 'History' in global_atts.keys():
+			    histtime=datetime.datetime.utcnow()
+			    nchandle.setncattr('History','{histtime:%B %d, %Y %H:%M} UTC - {history} '.format(histtime=histtime,history=edithist))
+			else:
+			    histtime=datetime.datetime.utcnow()
+			    nchandle.setncattr('History', global_atts['History'] +'\n'+ '{histtime:%B %d, %Y %H:%M} UTC - {history}'.format(histtime=histtime,history=edithist))
+
+		except:
+			print("EPIC Key: {ek} not found".format(ek=EPIC_var))
 
 df.close()
