@@ -55,10 +55,31 @@ parser.add_argument('OutDataFile', metavar='OutDataFile', type=str,
 parser.add_argument('config_file_name', metavar='config_file_name', type=str, 
                help='name of config file - eg  epickeys/TRANS_300_epickeys.json')
 parser.add_argument('--latlondep', nargs=3, type=float, help='latitude, longitude, depth of mooring file')
+parser.add_argument('-ctd','--ctd', action="store_true", help='is ctd file')
 args = parser.parse_args()
 
+wb = pd.read_csv(args.DataPath, parse_dates=['time'], na_values=[1E+35,'1E+35',' 1E+35'])
+wb.rename(columns=lambda x: x.strip(), inplace=True)
+wb.fillna(1E+35, inplace=True)
 
-data_dic = pd.read_csv(args.DataPath, parse_dates=['time'])
+if args.config_file_name.split('.')[-1] in ['json','pyini']:
+	EPIC_VARS_dict = get_config(args.config_file_name,'json')
+elif args.config_file_name.split('.')[-1] in ['yaml']:
+	EPIC_VARS_dict = get_config(args.config_file_name,'yaml')
+else:
+	print "config files must have .pyini, .json, or .yaml endings"
+	sys.exit()
+
+
+#cycle through and build data arrays
+#create a "data_dic" and associate the data with an epic key
+#this key needs to be defined in the EPIC_VARS dictionary in order to be in the nc file
+# if it is defined in the EPIC_VARS dic but not below, it will be filled with missing values
+# if it is below but not the epic dic, it will not make it to the nc file
+data_dic = {}
+for column in wb.keys():
+	print "{column} in file".format(column=column)
+	data_dic[column] = wb[column].to_dict().values()
 
 if not args.ctd:
 	### Time should be consistent in all files as a datetime object
@@ -73,7 +94,7 @@ if not args.ctd:
 	            
 	ncinstance = NetCDF_Create_Timeseries(savefile=args.OutDataFile)
 	ncinstance.file_create()
-	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
+	ncinstance.sbeglobal_atts(raw_data_file=args.DataPath.split('/')[-1])
 	ncinstance.dimension_init(time_len=len(time1))
 	ncinstance.variable_init(EPIC_VARS_dict)
 	ncinstance.add_coord_data(depth=depth, latitude=lat, longitude=lon, time1=time1, time2=time2)
@@ -86,7 +107,7 @@ else:
            
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
 	ncinstance.file_create()
-	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
+	ncinstance.sbeglobal_atts(raw_data_file=args.DataPath.split('/')[-1])
 	ncinstance.dimension_init(depth_len=len(data_dic['dep']))
 	ncinstance.variable_init(EPIC_VARS_dict)
 	ncinstance.add_coord_data(depth=data_dic['dep'], latitude=float(data_dic['lat'][0]), longitude=float(data_dic['lon'][0]), time1=time1[0], time2=time2[0])
