@@ -55,6 +55,9 @@ parser.add_argument("-tmd",'--ten_minute_decimate', action="store_true",
         help='decimate data to every ten minutes ::TIMESERIES:: only')
 parser.add_argument("-dave",'--daily_average', action="store_true", 
         help='generate daily max/min/mean data ::TIMESERIES:: only and uses pointerfile')
+parser.add_argument("-mave",'--monthly_average', action="store_true", 
+        help='generate monthly mean data ::TIMESERIES:: only and uses pointerfile')
+
 args = parser.parse_args()
 
 
@@ -104,6 +107,25 @@ if args.timeseries and args.PointerFile:
         print ncfile
         print df.to_csv()
 
+    elif args.monthly_average:
+
+       for ind, ncfile in enumerate(files_path):
+
+        ###nc readin/out
+        df = EcoFOCI_netCDF(ncfile)
+        global_atts = df.get_global_atts()
+        vars_dic = df.get_vars()
+        data = df.ncreadfile_dic()
+        df.close()
+
+        nctime = EPIC2Datetime(data['time'],data['time2'])
+        pddata = pd.DataFrame(data[data_var[0]][:,0,0,0],index=nctime)
+        pddata = pddata.replace(1e+35,np.nan)
+
+        df = pddata.resample('M').mean()
+
+        print ncfile
+        print df.to_csv()
     else:
        for ind, ncfile in enumerate(files_path):
 

@@ -72,7 +72,7 @@ if args.csv:
 	wb.rename(columns=lambda x: x.strip(),inplace=True)
 	wb.fillna(1e35,inplace=True)
 else:
-	wb = pd.read_excel(args.ExcelDataPath,sheetname=args.ExcelSheet)
+	wb = pd.read_excel(args.ExcelDataPath,sheet_name=args.ExcelSheet)
 	wb.fillna(1e35,inplace=True)
 
 #cycle through and build data arrays
