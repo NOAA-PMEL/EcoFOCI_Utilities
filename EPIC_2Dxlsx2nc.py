@@ -63,27 +63,27 @@ parser.add_argument('-fill_na','--fill_na', action="store_true", help='fill nan 
 
 args = parser.parse_args()
 
-wb_temp = pd.read_excel(args.ExcelDataPath,sheetname='Temperature', na_values=[1E+35,'1E+35',' 1E+35'])
+wb_temp = pd.read_excel(args.ExcelDataPath,sheet_name='Temperature', na_values=[1E+35,'1E+35',' 1E+35'])
 wb_temp.rename(columns=lambda x: x.strip(), inplace=True)
 if args.fill_na:
 	wb_temp.fillna(1E+35, inplace=True)
 
-wb_pres = pd.read_excel(args.ExcelDataPath,sheetname='Pressure', na_values=[1E+35,'1E+35',' 1E+35'])
-wb_pres.rename(columns=lambda x: x.strip(), inplace=True)
+wb_pres = pd.read_excel(args.ExcelDataPath,sheet_name='Pressure', na_values=[1E+35,'1E+35',' 1E+35'])
+#wb_pres.rename(columns=lambda x: x.strip(), inplace=True)
 if args.fill_na:
 	wb_pres.fillna(1E+35, inplace=True)
 
-wb_sal = pd.read_excel(args.ExcelDataPath,sheetname='Salinity', na_values=[1E+35,'1E+35',' 1E+35'])
-wb_sal.rename(columns=lambda x: x.strip(), inplace=True)
+wb_sal = pd.read_excel(args.ExcelDataPath,sheet_name='Salinity', na_values=[1E+35,'1E+35',' 1E+35'])
+#wb_sal.rename(columns=lambda x: x.strip(), inplace=True)
 if args.fill_na:
 	wb_sal.fillna(1E+35, inplace=True)
 
-wb_date = pd.read_excel(args.ExcelDataPath,sheetname='DateTime',
+wb_date = pd.read_excel(args.ExcelDataPath,sheet_name='DateTime',
 						na_values=[1E+35,'1E+35',' 1E+35'],
 						parse_dates=[['Date','Time']])
 
 datetime = [dt64todt(x) for x in wb_date.Date_Time.values]
-wb_coords = pd.read_excel(args.ExcelDataPath,sheetname='Coords', na_values=[1E+35,'1E+35',' 1E+35'])
+wb_coords = pd.read_excel(args.ExcelDataPath,sheet_name='Coords', na_values=[1E+35,'1E+35',' 1E+35'])
 
 
 EPIC_VARS_dict = get_config('EcoFOCI_config/epickeys/STP_epickeys.yaml','yaml')
