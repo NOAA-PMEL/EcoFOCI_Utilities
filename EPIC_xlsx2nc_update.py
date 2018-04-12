@@ -56,8 +56,8 @@ __keywords__ = 'Mooring', 'data','netcdf','epic','excel','xlsx','update'
 parser = argparse.ArgumentParser(description='Update epic flavored netcdf files fro xlsx file')
 parser.add_argument('ExcelDataPath', metavar='ExcelDataPath', type=str, 
                help='full path to excel (.xlsx) data file')
-parser.add_argument('ExcelSheet', metavar='ExcelSheet', type=int, 
-			   help='Relevant Sheet number in workbook')
+parser.add_argument('ExcelSheet', metavar='ExcelSheet', type=str, 
+			   help='Relevant Sheet name in recordbook')
 parser.add_argument('NCDataPath', metavar='NCDataPath', type=str, 
                help='full path to netcdf (.nc) file')
 parser.add_argument('-csv','--csv', action="store_true", help='from csv' )
