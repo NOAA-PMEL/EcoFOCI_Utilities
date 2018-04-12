@@ -14,7 +14,7 @@
 
 #System Stack
 import datetime
-import os
+import os,sys
 import argparse
 
 #Science Stack
@@ -119,7 +119,11 @@ if args.timeseries and args.PointerFile:
         df.close()
 
         nctime = EPIC2Datetime(data['time'],data['time2'])
-        pddata = pd.DataFrame(data[data_var[0]][:,0,0,0],index=nctime)
+        try:
+            pddata = pd.DataFrame(data[data_var[0]][:,0,0,0],index=nctime)
+        except:
+            print("Variable not found in file - skipping {ncfile}".format(ncfile=ncfile))
+            continue
         pddata = pddata.replace(1e+35,np.nan)
 
         df = pddata.resample('M').mean()
@@ -137,7 +141,7 @@ if args.timeseries and args.PointerFile:
         ### get and print epic timeseries data
         #header
         header = 'time, '
-        for k in vars_dic.keys():
+        for k in sorted(vars_dic.keys()):
             if (k in data_var):
                 header = header + ', ' + k
         print header + ', index'
@@ -165,7 +169,7 @@ if args.timeseries and args.PointerFile:
                 if (EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0]).hour == args.subset:
                     timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                     line = ''
-                    for k in vars_dic.keys():
+                    for k in sorted(vars_dic.keys()):
                         if k in ['time','time2']:
                             pass
                         elif k in data_var:
@@ -177,7 +181,7 @@ if args.timeseries and args.PointerFile:
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
-                for k in vars_dic.keys():
+                for k in sorted(vars_dic.keys()):
                     if k in ['time','time2']:
                         pass
                     elif k in data_var:
@@ -214,7 +218,7 @@ else:
                 if (EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0]).minute == 0:
                     timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                     line = ''
-                    for k in vars_dic.keys():
+                    for k in sorted(vars_dic.keys()):
                         if k in ['time','time2']:
                             pass
                         elif k in ['lat','lon','dep','depth','depth01','latitude','longitude']:
@@ -229,7 +233,7 @@ else:
                 if ((EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0]).minute) % 10 == 0:
                     timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                     line = ''
-                    for k in vars_dic.keys():
+                    for k in sorted(vars_dic.keys()):
                         if k in ['time','time2']:
                             pass
                         elif k in ['lat','lon','dep','depth','depth01','latitude','longitude']:
@@ -244,7 +248,7 @@ else:
         #header
         if args.units_meta:
             header = 'time, '
-            for k in vars_dic.keys():
+            for k in sorted(vars_dic.keys()):
                 if (k != 'time') and (k != 'time2'):
                     header = header + ', ' + k
             print header
@@ -269,7 +273,7 @@ else:
                 if (EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0]).hour == args.subset:
                     timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                     line = ''
-                    for k in vars_dic.keys():
+                    for k in sorted(vars_dic.keys()):
                         if k in ['time','time2']:
                             pass
                         elif k in ['lat','lon','latitude','longitude']:
@@ -283,7 +287,7 @@ else:
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
-                for k in vars_dic.keys():
+                for k in sorted(vars_dic.keys()):
                     if k in ['time','time2']:
                         pass
                     elif k in ['lat','lon','latitude','longitude']:
@@ -301,7 +305,7 @@ else:
         #header
 
         header = 'time, '
-        for k in vars_dic.keys():
+        for k in sorted(vars_dic.keys()):
             if (k in args.epic):
                 header = header + ', ' + k
         print header + ', index'
@@ -312,7 +316,7 @@ else:
             #units/var attributes
             longname = ', '
             header = 'time, '
-            for v, k in enumerate(vars_dic):
+            for k in sorted(vars_dic.keys()):
                 if k in args.epic:
                     tmp = df.get_vars_attributes(var_name=k)
                     header = header + ', ' + tmp.units
@@ -330,7 +334,7 @@ else:
                 if (EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0]).hour == args.subset:
                     timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                     line = ''
-                    for k in vars_dic.keys():
+                    for k in sorted(vars_dic.keys()):
                         if k in ['time','time2']:
                             pass
                         elif k in args.epic:
@@ -342,7 +346,7 @@ else:
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
-                for k in vars_dic.keys():
+                for k in sorted(vars_dic.keys()):
                     if k in ['time','time2']:
                         pass
                     elif k in args.epic:
@@ -357,7 +361,7 @@ else:
         #header
         if args.units_meta:
             header = 'cast, time'
-            for k in vars_dic.keys():
+            for k in sorted(vars_dic.keys()):
                 if (k != 'time') and (k != 'time2'):
                     header = header + ', ' + k
             print header
@@ -386,7 +390,7 @@ else:
         for i, val in enumerate(vert_var):
             timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][0],], [data['time2'][0],])[0],"%Y-%m-%d %H:%M:%S" )
             line = ''
-            for k in vars_dic.keys():
+            for k in sorted(vars_dic.keys()):
                 if k in ['time','time2']:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
@@ -403,7 +407,7 @@ else:
         #header
         if args.units_meta:
             header = 'cast, time (utc)'
-            for k in vars_dic.keys():
+            for k in sorted(vars_dic.keys()):
                 if k in ['time','time2']:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
@@ -454,7 +458,7 @@ else:
         for i, val in enumerate(vert_var):
             timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][0],], [data['time2'][0],])[0],"%Y-%m-%d %H:%M:%S" )
             line = ''
-            for k in vars_dic.keys():
+            for k in sorted(vars_dic.keys()):
                 if k in ['time','time2']:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
@@ -471,7 +475,7 @@ else:
 if args.non_epic:
     ### get and print epic timeseries data
     header = ''
-    for k in vars_dic.keys():
+    for k in sorted(vars_dic.keys()):
         header = header + ', ' + k
     print header
 
@@ -489,7 +493,7 @@ if args.non_epic:
 
     for i, val in enumerate(data['N_LEVELS']):
         line = ''
-        for k in vars_dic.keys():
+        for k in sorted(vars_dic.keys()):
             line = line + ', ' + str(data[k][i,0,0,0])
             
         print timestr + ', ' + line
