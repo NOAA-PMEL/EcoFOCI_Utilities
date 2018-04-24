@@ -265,8 +265,8 @@ class NetCDF_Create_Profile(object):
             return ( rootgrpID )
         
     def sbeglobal_atts(self, raw_data_file='', Water_Mass='', Water_Depth=9999, 
-                       Prog_Cmnt='', Experiment='', Edit_Cmnt='', Station_Name='', 
-                       SerialNumber='',Instrument_Type='', History='', Project=''):
+                       Prog_Cmnt='', Experiment='', Edit_Cmnt='', Station_Name='',CruiseID='', 
+                       SerialNumber='',Instrument_Type='', History='', Project='',Cast=''):
         """
         Assumptions
         -----------
@@ -286,6 +286,8 @@ class NetCDF_Create_Profile(object):
         self.rootgrpID.EDIT_CMNT01 = Edit_Cmnt
         self.rootgrpID.WATER_DEPTH = Water_Depth
         self.rootgrpID.MOORING = Station_Name
+        self.rootgrpID.CRUISE = CruiseID
+        self.rootgrpID.CAST = Cast
         self.rootgrpID.WATER_MASS = Water_Mass
         self.rootgrpID.EXPERIMENT = Experiment
         self.rootgrpID.PROJECT = Experiment

@@ -18,6 +18,7 @@
 
  History:
  --------
+ 2018-04-23: SBELL - add ability to include a notes column
  2016-12-02: SBELL - Add ctd/profile routines
 
 """
@@ -27,6 +28,7 @@ import os
 import sys
 import datetime
 import argparse
+from collections import OrderedDict, defaultdict
 
 #Science Stack
 import numpy as np
@@ -51,8 +53,8 @@ __keywords__ = 'Mooring', 'data','netcdf','epic','excel','xlsx'
 parser = argparse.ArgumentParser(description='Convert excel data into epic flavored netcdf files')
 parser.add_argument('ExcelDataPath', metavar='ExcelDataPath', type=str, 
                help='full path to excel (.xlsx) data file')
-parser.add_argument('ExcelSheet', metavar='ExcelSheet', type=int, 
-			   help='Relevant Sheet number in workbook')
+parser.add_argument('ExcelSheet', metavar='ExcelSheet', type=str, 
+			   help='Relevant Sheet name in workbook')
 parser.add_argument('OutDataFile', metavar='OutDataFile', type=str, 
                help='full path to output data file')
 parser.add_argument('config_file_name', metavar='config_file_name', type=str, 
@@ -60,12 +62,15 @@ parser.add_argument('config_file_name', metavar='config_file_name', type=str,
 parser.add_argument('-ctd','--ctd', action="store_true",
                help='File is a CTD file')
 parser.add_argument('--latlondep', nargs=3, type=float, help='latitude, longitude, depth of mooring file')
+parser.add_argument('--history', nargs=1, type=str, help='universal history notes')
 
 args = parser.parse_args()
 
-wb = pd.read_excel(args.ExcelDataPath,sheetname=args.ExcelSheet, na_values=[1E+35,'1E+35',' 1E+35'])
+wb = pd.read_excel(args.ExcelDataPath,sheet_name=args.ExcelSheet, na_values=[1E+35,'1E+35',' 1E+35'])
 wb.rename(columns=lambda x: x.strip(), inplace=True)
 wb.fillna(1E+35, inplace=True)
+if args.ctd:
+	wb.sort_values(by='dep', ascending=True, inplace=True)
 
 print wb.info()
 
@@ -77,7 +82,6 @@ else:
 	print "config files must have .pyini, .json, or .yaml endings"
 	sys.exit()
 
-
 #cycle through and build data arrays
 #create a "data_dic" and associate the data with an epic key
 #this key needs to be defined in the EPIC_VARS dictionary in order to be in the nc file
@@ -86,21 +90,31 @@ else:
 data_dic = {}
 for column in wb.keys():
 	print "{column} in file".format(column=column)
-	data_dic[column] = wb[column].to_dict().values()
+	data_dic[column] = wb[column].to_dict(into=OrderedDict).values()
 
 
+if args.history:
+	if data_dic['Notes'][0] == 1e35:
+		history = args.history[0] + '\n'
+	else:
+		history = args.history[0] + '\n' + data_dic['Notes'][0]
+else:
+	if data_dic['Notes'][0] == 1e35:
+		history = ''
+	else:
+		history = data_dic['Notes'][0]
+
+if args.latlondep:
+	(lat,lon,depth) = args.latlondep
+else:
+	(lat,lon,depth) = (-9999, -9999,-9999)
+
+#%%
 if not args.ctd:
 	### Time should be consistent in all files as a datetime object
 	#convert timestamp to datetime
 	time_datetime = [x.to_pydatetime() for x in data_dic['time']]
 	time1,time2 = np.array(Datetime2EPIC(time_datetime), dtype='f8')
-
-
-	if args.latlondep:
-		(lat,lon,depth) = args.latlondep
-	else:
-		(lat,lon,depth) = (-9999, -9999,-9999)
-
 	ncinstance = NetCDF_Create_Timeseries(savefile=args.OutDataFile)
 	ncinstance.file_create()
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
@@ -116,9 +130,11 @@ else:
            
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
 	ncinstance.file_create()
-	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
+	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1]
+			,CruiseID=data_dic['Cruise'][0],Station_Name=data_dic['Station'][0],Cast=data_dic['Station'][0])
 	ncinstance.dimension_init(depth_len=len(data_dic['dep']))
 	ncinstance.variable_init(EPIC_VARS_dict)
 	ncinstance.add_coord_data(depth=data_dic['dep'], latitude=float(data_dic['lat'][0]), longitude=float(data_dic['lon'][0]), time1=time1[0], time2=time2[0])
 	ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic)
+	ncinstance.add_history(history)
 	ncinstance.close()
