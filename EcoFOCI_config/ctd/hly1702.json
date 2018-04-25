@@ -71,6 +71,14 @@
 		"name": "O",
 		"units": "umol/kg"
 	},
+	"BTL_103": {
+		"name": "BTL",
+		"generic_name": "",
+		"fortran": "",
+		"EPIC_KEY": 103,
+		"units": "",
+		"longname": "NISKIN BOTTLE NUMBER"
+	},
 	"NH4_189": {
 		"name": "NH4",
 		"generic_name": "NH4",

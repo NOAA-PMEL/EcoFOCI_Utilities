@@ -285,7 +285,7 @@ class NetCDF_Create_Profile(object):
         self.rootgrpID.PROG_CMNT01 = Prog_Cmnt
         self.rootgrpID.EDIT_CMNT01 = Edit_Cmnt
         self.rootgrpID.WATER_DEPTH = Water_Depth
-        self.rootgrpID.MOORING = Station_Name
+        self.rootgrpID.STATION = Station_Name
         self.rootgrpID.CRUISE = CruiseID
         self.rootgrpID.CAST = Cast
         self.rootgrpID.WATER_MASS = Water_Mass

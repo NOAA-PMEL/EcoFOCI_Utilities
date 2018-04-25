@@ -131,7 +131,7 @@ else:
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
 	ncinstance.file_create()
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1]
-			,CruiseID=data_dic['Cruise'][0],Station_Name=data_dic['Station'][0],Cast=data_dic['Station'][0])
+			,CruiseID=data_dic['Cruise'][0],Station_Name=data_dic['Cast'][0],Cast=data_dic['Cast'][0])
 	ncinstance.dimension_init(depth_len=len(data_dic['dep']))
 	ncinstance.variable_init(EPIC_VARS_dict)
 	ncinstance.add_coord_data(depth=data_dic['dep'], latitude=float(data_dic['lat'][0]), longitude=float(data_dic['lon'][0]), time1=time1[0], time2=time2[0])
