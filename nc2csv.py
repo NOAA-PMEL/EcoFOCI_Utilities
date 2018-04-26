@@ -151,7 +151,7 @@ if args.timeseries and args.PointerFile:
             #units/var attributes
             longname = ', '
             header = 'time, '
-            for v, k in enumerate(vars_dic):
+            for v, k in enumerate(sorted(vars_dic)):
                 if k in data_var:
                     tmp = df.get_vars_attributes(var_name=k)
                     header = header + ', ' + tmp.units
@@ -256,7 +256,7 @@ else:
             #units/var attributes
             longname = ', '
             header = 'time, '
-            for v, k in enumerate(vars_dic):
+            for v, k in enumerate(sorted(vars_dic)):
                 if (k != 'time') and (k != 'time2'):
                     tmp = df.get_vars_attributes(var_name=k)
                     header = header + ', ' + tmp.units
@@ -369,7 +369,7 @@ else:
             #units/var attributes
             longname = ', '
             header = 'cast, time'
-            for v, k in enumerate(vars_dic):
+            for v, k in enumerate(sorted(vars_dic)):
                 if (k != 'time') and (k != 'time2'):
                     tmp = df.get_vars_attributes(var_name=k)
                     header = header + ', ' + tmp.units
@@ -421,7 +421,7 @@ else:
             #units/var attributes
             longname = ', '
             header = 'cast, time (utc)'
-            for v, k in enumerate(vars_dic):
+            for v, k in enumerate(sorted(vars_dic)):
                 if k in ['time','time2']:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
@@ -481,7 +481,7 @@ if args.non_epic:
 
     #units/var attributes
     longname = ', '
-    for v, k in enumerate(vars_dic):
+    for v, k in enumerate(sorted(vars_dic)):
         tmp = df.get_vars_attributes(var_name=k)
         try:
             longname = longname + ', ' + tmp.long_name
