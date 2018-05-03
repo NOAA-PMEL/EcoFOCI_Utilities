@@ -109,6 +109,11 @@ if args.latlondep:
 else:
 	(lat,lon,depth) = (-9999, -9999,-9999)
 
+if data_dic['Bottom Depth']:
+	bottom_depth = data_dic['Bottom Depth'][0]
+else:
+	bottom_depth = 9999
+
 #%%
 if not args.ctd:
 	### Time should be consistent in all files as a datetime object
@@ -120,7 +125,9 @@ if not args.ctd:
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
 	ncinstance.dimension_init(time_len=len(time1))
 	ncinstance.variable_init(EPIC_VARS_dict)
-	ncinstance.add_coord_data(depth=depth, latitude=lat, longitude=lon, time1=time1, time2=time2)
+	ncinstance.add_coord_data(depth=depth, 
+							latitude=lat, longitude=lon, 
+							time1=time1, time2=time2)
 	ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic)
 	ncinstance.close()
 else:
@@ -130,11 +137,16 @@ else:
            
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
 	ncinstance.file_create()
-	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1]
-			,CruiseID=data_dic['Cruise'][0],Station_Name=data_dic['Cast'][0],Cast=data_dic['Cast'][0])
+	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1],
+								CruiseID=data_dic['Cruise'][0],
+								Station_Name=data_dic['Cast'][0],Cast=data_dic['Cast'][0],
+								Water_Depth=bottom_depth)
 	ncinstance.dimension_init(depth_len=len(data_dic['dep']))
 	ncinstance.variable_init(EPIC_VARS_dict)
-	ncinstance.add_coord_data(depth=data_dic['dep'], latitude=float(data_dic['lat'][0]), longitude=float(data_dic['lon'][0]), time1=time1[0], time2=time2[0])
+	ncinstance.add_coord_data(depth=data_dic['dep'], 
+								latitude=float(data_dic['lat'][0]), 
+								longitude=float(data_dic['lon'][0]), 
+								time1=time1[0], time2=time2[0])
 	ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic)
 	ncinstance.add_history(history)
 	ncinstance.close()
