@@ -382,10 +382,16 @@ else:
             print header
 
 
+        vert_var = ''
+        for param in ['dep','depth','pressure']:
+            if not vert_var:
+                vert_var = data.get(param,'')
+
         try:
-            vert_var = data['dep']
+            vert_var
         except:
-            vert_var = data['depth']
+            "No recognized depth parameter"
+
 
         for i, val in enumerate(vert_var):
             timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][0],], [data['time2'][0],])[0],"%Y-%m-%d %H:%M:%S" )
@@ -395,7 +401,7 @@ else:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
                     line = line + ', ' + str(data[k][0])
-                elif k in ['depth','dep']:
+                elif k in ['depth','dep','pressure']:
                     line = line + ', ' + str(data[k][i])
                 else:
                     line = line + ', ' + str(data[k][0,i,0,0])
