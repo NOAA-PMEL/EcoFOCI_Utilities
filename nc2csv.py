@@ -412,7 +412,7 @@ else:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
                     header = header + ', ' + k
-                elif k in ['depth','dep']:
+                elif k in ['depth','dep','pressure']:
                     header = header + ', ' + k
                 elif k in args.epic:
                     header = header + ', ' + k
@@ -431,7 +431,7 @@ else:
                         longname = longname + ', ' + tmp.long_name
                     except:
                         longname = longname + ', '
-                elif k in ['depth','dep']:
+                elif k in ['depth','dep','pressure']:
                     tmp = df.get_vars_attributes(var_name=k)
                     header = header + ', ' + tmp.units
                     try:
@@ -450,10 +450,15 @@ else:
             print header
 
 
+        vert_var = ''
+        for param in ['dep','depth','pressure']:
+            if not vert_var:
+                vert_var = data.get(param,'')
+
         try:
-            vert_var = data['dep']
+            vert_var
         except:
-            vert_var = data['depth']
+            "No recognized depth parameter"
 
         for i, val in enumerate(vert_var):
             timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][0],], [data['time2'][0],])[0],"%Y-%m-%d %H:%M:%S" )
@@ -463,7 +468,7 @@ else:
                     pass
                 elif k in ['lat','lon','latitude','longitude','time01','time012']:
                     line = line + ', ' + str(data[k][0])
-                elif k in ['depth','dep']:
+                elif k in ['depth','dep','pressure']:
                     line = line + ', ' + str(data[k][i])
                 elif k in args.epic:
                     line = line + ', ' + str(data[k][0,i,0,0])
