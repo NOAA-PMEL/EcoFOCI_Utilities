@@ -384,7 +384,7 @@ else:
 
         vert_var = ''
         for param in ['dep','depth','pressure']:
-            if not vert_var:
+            if not len(vert_var) > 0:
                 vert_var = data.get(param,'')
 
         try:

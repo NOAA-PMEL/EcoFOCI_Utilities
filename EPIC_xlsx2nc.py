@@ -66,7 +66,9 @@ parser.add_argument('--history', nargs=1, type=str, help='universal history note
 
 args = parser.parse_args()
 
-wb = pd.read_excel(args.ExcelDataPath,sheet_name=args.ExcelSheet, na_values=[1E+35,'1E+35',' 1E+35'])
+wb = pd.read_excel(args.ExcelDataPath,sheet_name=args.ExcelSheet, 
+		na_values=[1E+35,'1E+35',' 1E+35'],
+		parse_dates=True)
 wb.rename(columns=lambda x: x.strip(), inplace=True)
 wb.fillna(1E+35, inplace=True)
 if args.ctd:
@@ -93,7 +95,7 @@ for column in wb.keys():
 	data_dic[column] = wb[column].to_dict(into=OrderedDict).values()
 
 
-if args.history:
+"""if args.history:
 	if data_dic['Notes'][0] == 1e35:
 		history = args.history[0] + '\n'
 	else:
@@ -102,24 +104,23 @@ else:
 	if data_dic['Notes'][0] == 1e35:
 		history = ''
 	else:
-		history = data_dic['Notes'][0]
+		history = data_dic['Notes'][0]"""
 
 if args.latlondep:
 	(lat,lon,depth) = args.latlondep
 else:
 	(lat,lon,depth) = (-9999, -9999,-9999)
 
-if data_dic['Bottom Depth']:
+"""if data_dic['Bottom Depth']:
 	bottom_depth = data_dic['Bottom Depth'][0]
 else:
-	bottom_depth = 9999
+	bottom_depth = 9999"""
 
 #%%
 if not args.ctd:
 	### Time should be consistent in all files as a datetime object
 	#convert timestamp to datetime
-	time_datetime = [x.to_pydatetime() for x in data_dic['time']]
-	time1,time2 = np.array(Datetime2EPIC(time_datetime), dtype='f8')
+	time1,time2 = np.array(Datetime2EPIC(data_dic['time']), dtype='f8')
 	ncinstance = NetCDF_Create_Timeseries(savefile=args.OutDataFile)
 	ncinstance.file_create()
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1])
@@ -131,9 +132,7 @@ if not args.ctd:
 	ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic)
 	ncinstance.close()
 else:
-	data_dic['time'] =  pd.to_datetime(data_dic['time'], format='%Y%m%d %H:%M:%S')
-	time_datetime = [x.to_pydatetime() for x in data_dic['time']]
-	time1,time2 = np.array(Datetime2EPIC(time_datetime), dtype='f8')
+	time1,time2 = np.array(Datetime2EPIC(data_dic['time']), dtype='f8')
            
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
 	ncinstance.file_create()
