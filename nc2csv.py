@@ -1,16 +1,36 @@
 #!/usr/bin/env python
 
 """
+ Background:
+ ===========
  nc2csv.py
 
+  Purpose:
+ ========
+ Convert timeseries and ctd netcdf files into csv files
+
+
+ File Format:
+ ============
+ - S.Bell - epic ctd and epic nut data 
+
+
  History:
- --------
+ ========
+ 2018-07-24: replace print statements with functions and import future for py3 compatability
  2016-07-25: update EPIC to CF time routines to be in EPIC2Datetime.py and removed time calls
     in this routine.
 
  2016-08-10: transfer routine to EcoFOCI_MooringAnalysis package to simplify and unify
 
+
+ Compatibility:
+ ==============
+ python >=3.6 ?
+ python 2.7 
 """
+
+from __future__ import print_function
 
 #System Stack
 import datetime
@@ -74,7 +94,7 @@ if args.timeseries and args.PointerFile:
     elif args.PointerFile.split('.')[-1] == 'yaml':
         pointer_file = ConfigParserLocal.get_config(args.PointerFile,'yaml')
     else:
-        print "PointerFile format not recognized"
+        print("PointerFile format not recognized")
         sys.exit()
 
     MooringDataPath = pointer_file['mooring_data_path']
@@ -104,8 +124,8 @@ if args.timeseries and args.PointerFile:
         #df['max'] = pddata.resample('D').max()
         #df['min'] = pddata.resample('D').min()
 
-        print ncfile
-        print df.to_csv()
+        print(ncfile)
+        print(df.to_csv())
 
     elif args.monthly_average:
 
@@ -128,8 +148,8 @@ if args.timeseries and args.PointerFile:
 
         df = pddata.resample('M').mean()
 
-        print ncfile
-        print df.to_csv()
+        print(ncfile)
+        print(df.to_csv())
     else:
        for ind, ncfile in enumerate(files_path):
 
@@ -144,7 +164,7 @@ if args.timeseries and args.PointerFile:
         for k in sorted(vars_dic.keys()):
             if (k in data_var):
                 header = header + ', ' + k
-        print header + ', index'
+        print(header + ', index')
 
         if args.units_meta:
 
@@ -160,8 +180,8 @@ if args.timeseries and args.PointerFile:
                     except:
                         longname = longname + ', '
 
-            print longname
-            print header + ', index'
+            print(longname)
+            print(header + ', index')
 
         for i, val in enumerate(data['time']):
 
@@ -177,7 +197,7 @@ if args.timeseries and args.PointerFile:
                                 line = line + ','
                             else:
                                 line = line + ', ' + str(data[k][i,0,0,0])
-                    print timestr + ', ' + line + ', ' + str(i)
+                    print(timestr + ', ' + line + ', ' + str(i))
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
@@ -189,11 +209,11 @@ if args.timeseries and args.PointerFile:
                             line = line + ','
                         else:
                             line = line + ', ' + str(data[k][i,0,0,0])
-                print timestr + ', ' + line + ', ' + str(i)
+                print(timestr + ', ' + line + ', ' + str(i))
         df.close()
 
 elif not args.timeseries and args.PointerFile:
-    print "Only capable of dealing with timeseries pointer files"
+    print("Only capable of dealing with timeseries pointer files")
 
 else:
     ###nc readin/out
@@ -205,13 +225,13 @@ else:
 
     if args.header_meta:
         ### get and print epic header information
-        print "Global Attributes: for file {0}".format(args.infile.split('/')[-1])
+        print("Global Attributes: for file {0}".format(args.infile.split('/')[-1]))
         for var in global_atts.keys():
             try:
-                print ("            {0}: {1}").format(var,global_atts[var])
+                print("            {0}: {1}".format(var,global_atts[var]))
             except UnicodeEncodeError:
-                print ("            {0}: {1}").format(var,'***Unrecognized ASCII characters***')            
-        print "\n"
+                print("            {0}: {1}".format(var,'***Unrecognized ASCII characters***'))            
+        print("\n")
 
     if args.hourly_decimate:
         for i, val in enumerate(data['time']):
@@ -226,7 +246,7 @@ else:
                         else:
                             line = line + ', ' + str(data[k][i,0,0,0])
                         
-                    print timestr + ', ' + line
+                    print(timestr + ', ' + line)
 
     if args.ten_minute_decimate:
         for i, val in enumerate(data['time']):
@@ -241,7 +261,7 @@ else:
                         else:
                             line = line + ', ' + str(data[k][i,0,0,0])
                         
-                    print timestr + ', ' + line
+                    print(timestr + ', ' + line)
         
     if args.timeseries and not args.epic:
         ### get and print epic timeseries data
@@ -251,7 +271,7 @@ else:
             for k in sorted(vars_dic.keys()):
                 if (k != 'time') and (k != 'time2'):
                     header = header + ', ' + k
-            print header
+            print(header)
         
             #units/var attributes
             longname = ', '
@@ -265,8 +285,8 @@ else:
                     except:
                         longname = longname + ', '
 
-            print longname
-            print header
+            print(longname)
+            print(header)
 
         for i, val in enumerate(data['time']):
             if args.subset:
@@ -283,7 +303,7 @@ else:
                         else:
                             line = line + ', ' + str(data[k][i,0,0,0])
                         
-                    print timestr + ', ' + line
+                    print(timestr + ', ' + line)
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
@@ -297,7 +317,7 @@ else:
                     else:
                         line = line + ', ' + str(data[k][i,0,0,0])
                     
-                print timestr + ', ' + line
+                print(timestr + ', ' + line)
 
     if args.timeseries and args.epic:
 
@@ -308,7 +328,7 @@ else:
         for k in sorted(vars_dic.keys()):
             if (k in args.epic):
                 header = header + ', ' + k
-        print header + ', index'
+        print(header + ', index')
 
         if args.units_meta:
 
@@ -325,8 +345,8 @@ else:
                     except:
                         longname = longname + ', '
 
-            print longname
-            print header + ', index'
+            print(longname)
+            print(header + ', index')
 
         for i, val in enumerate(data['time']):
 
@@ -342,7 +362,7 @@ else:
                                 line = line + ','
                             else:
                                 line = line + ', ' + str(data[k][i,0,0,0])
-                    print timestr + ', ' + line + ', ' + str(i)
+                    print(timestr + ', ' + line + ', ' + str(i))
             else:
                 timestr = datetime.datetime.strftime(EPIC2Datetime([data['time'][i],],[data['time2'][i],])[0],"%Y-%m-%d %H:%M:%S" )
                 line = ''
@@ -354,7 +374,7 @@ else:
                             line = line + ','
                         else:
                             line = line + ', ' + str(data[k][i,0,0,0])
-                print timestr + ', ' + line + ', ' + str(i)
+                print(timestr + ', ' + line + ', ' + str(i))
 
     if args.ctd and not args.epic:
         ### get and print epic ctd data
@@ -364,7 +384,7 @@ else:
             for k in sorted(vars_dic.keys()):
                 if (k != 'time') and (k != 'time2'):
                     header = header + ', ' + k
-            print header
+            print(header)
         
             #units/var attributes
             longname = ', '
@@ -378,8 +398,8 @@ else:
                     except:
                         longname = longname + ', '
 
-            print longname
-            print header
+            print(longname)
+            print(header)
 
 
         vert_var = ''
@@ -406,7 +426,7 @@ else:
                 else:
                     line = line + ', ' + str(data[k][0,i,0,0])
                 
-            print global_atts['CAST'] + ', ' + timestr + line
+            print(global_atts['CAST'] + ', ' + timestr + line)
 
     if args.ctd and args.epic:
         ### get and print epic ctd data
@@ -422,7 +442,7 @@ else:
                     header = header + ', ' + k
                 elif k in args.epic:
                     header = header + ', ' + k
-            print header
+            print(header)
         
             #units/var attributes
             longname = ', '
@@ -452,8 +472,8 @@ else:
                     except:
                         longname = longname + ', '
 
-            print longname
-            print header
+            print(longname)
+            print(header)
 
 
         vert_var = ''
@@ -479,7 +499,7 @@ else:
                 elif k in args.epic:
                     line = line + ', ' + str(data[k][0,i,0,0])
                 
-            print global_atts['CAST'] + ', ' + timestr + line
+            print(global_atts['CAST'] + ', ' + timestr + line)
 
     df.close()
 
@@ -488,7 +508,7 @@ if args.non_epic:
     header = ''
     for k in sorted(vars_dic.keys()):
         header = header + ', ' + k
-    print header
+    print(header)
 
     #units/var attributes
     longname = ', '
@@ -499,12 +519,12 @@ if args.non_epic:
         except:
             longname = longname + ', '
 
-    print longname
-    print header
+    print(longname)
+    print(header)
 
     for i, val in enumerate(data['N_LEVELS']):
         line = ''
         for k in sorted(vars_dic.keys()):
             line = line + ', ' + str(data[k][i,0,0,0])
             
-        print timestr + ', ' + line
+        print(timestr + ', ' + line)
