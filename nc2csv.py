@@ -145,6 +145,7 @@ if args.timeseries and args.PointerFile:
             print("Variable not found in file - skipping {ncfile}".format(ncfile=ncfile))
             continue
         pddata = pddata.replace(1e+35,np.nan)
+        pddata[pddata > 1e+34] = np.nan
 
         df = pddata.resample('M').mean()
 
