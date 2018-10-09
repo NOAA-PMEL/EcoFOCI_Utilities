@@ -59,7 +59,11 @@ class EcoFOCI_netCDF(object):
         data = {}
         for j, v in enumerate(self.nchandle.variables): 
             if v in self.nchandle.variables.keys(): #check for nc variable
+                try:
                     data[v] = self.nchandle.variables[v][:]
+                except:
+                    print("Variable {v} not included".format(v=v))
+                    pass
 
             else: #if parameter doesn't exist fill the array with zeros
                 data[v] = None
