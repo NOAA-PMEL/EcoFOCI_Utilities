@@ -1,3 +1,6 @@
+
+config file examples can be found in the repository - EcoFOCI_FieldOps_Documentation
+
 ################
 
 Legal Disclaimer
