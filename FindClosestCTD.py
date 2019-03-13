@@ -131,7 +131,9 @@ if args.MooringID:
 
     #get db meta information for mooring
     ### connect to DB
-    (db,cursor) = connect_to_DB(db_config['systems'][host]['host'], db_config['login']['user'], db_config['login']['password'], db_config['database'], db_config['systems'][host]['port'])
+    (db,cursor) = connect_to_DB(db_config['systems'][host]['host'], 
+        db_config['login']['user'], db_config['login']['password'], 
+        db_config['database'], db_config['systems'][host]['port'])
     table = 'mooringdeploymentlogs'
     Mooring_Meta = read_mooring(db, cursor, table, args.MooringID)
     db.close()
@@ -152,7 +154,9 @@ else:
 
 #get db meta information for mooring
 ### connect to DB
-    (db,cursor) = connect_to_DB(db_config['systems'][host]['host'], db_config['login']['user'], db_config['login']['password'], db_config['database'], db_config['systems'][host]['port'])
+(db,cursor) = connect_to_DB(db_config['systems'][host]['host'], 
+    db_config['login']['user'], db_config['login']['password'], 
+    db_config['database'], db_config['systems'][host]['port'])
 table = 'cruisecastlogs'
 cruise_data = read_data(db, cursor, table, args.YearRange)
 db.close()
