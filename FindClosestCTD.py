@@ -29,17 +29,16 @@ __status__   = "Development"
 
     
 """--------------------------------SQL Init----------------------------------------"""
-def connect_to_DB(host, user, password, database, port=3306):
+def connect_to_DB(host, user, password, database, port):
     # Open database connection
     try:
         db = pymysql.connect(host, user, password, database, port)
     except:
-        print "db error"
+        print("db error")
         
     # prepare a cursor object using cursor() method
     cursor = db.cursor(pymysql.cursors.DictCursor)
-    return(db,cursor)
-    
+    return(db,cursor)   
 
 
 def read_data(db, cursor, table, yearrange):
@@ -150,7 +149,7 @@ threshold = args.DistanceThreshold #km
 if args.db_ctd:
     db_config = ConfigParserLocal.get_config(args.db_moorings)
 else:
-    db_config = ConfigParserLocal.get_config('../EcoFOCI_config/EcoFOCI_AtSea/db_config_cruises.yaml','yaml')
+    db_config = ConfigParserLocal.get_config('../EcoFOCI_Config/EcoFOCI_AtSea/db_config_cruises.yaml','yaml')
 
 #get db meta information for mooring
 ### connect to DB
