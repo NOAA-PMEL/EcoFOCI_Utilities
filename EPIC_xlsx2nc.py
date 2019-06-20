@@ -95,16 +95,16 @@ for column in wb.keys():
 	data_dic[column] = wb[column].to_dict(into=OrderedDict).values()
 
 
-"""if args.history:
-	if data_dic['Notes'][0] == 1e35:
-		history = args.history[0] + '\n'
-	else:
+if args.history:
+	try:
 		history = args.history[0] + '\n' + data_dic['Notes'][0]
+	except:
+		history = args.history[0]
 else:
-	if data_dic['Notes'][0] == 1e35:
+	try:
+		history = data_dic['Notes'][0]
+	except:
 		history = ''
-	else:
-		history = data_dic['Notes'][0]"""
 
 if args.latlondep:
 	(lat,lon,depth) = args.latlondep
@@ -132,6 +132,7 @@ if not args.ctd:
 	ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic)
 	ncinstance.close()
 else:
+	print(data_dic['time'])
 	time1,time2 = np.array(Datetime2EPIC(data_dic['time']), dtype='f8')
            
 	ncinstance = NetCDF_Create_Profile(savefile=args.OutDataFile)
@@ -139,7 +140,7 @@ else:
 	ncinstance.sbeglobal_atts(raw_data_file=args.ExcelDataPath.split('/')[-1],
 								CruiseID=data_dic['Cruise'][0],
 								Station_Name=data_dic['Cast'][0],Cast=data_dic['Cast'][0],
-								Water_Depth=bottom_depth)
+								Water_Depth=depth)
 	ncinstance.dimension_init(depth_len=len(data_dic['dep']))
 	ncinstance.variable_init(EPIC_VARS_dict)
 	ncinstance.add_coord_data(depth=data_dic['dep'], 

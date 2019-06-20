@@ -1,5 +1,3 @@
-#!/usr/bin/env
-
 """
  Background:
  --------
@@ -16,6 +14,9 @@
  Modifications:
  --------------
 
+ 2019-05-29: SW Bell - subroutine to order load in from yaml file
+    https://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts
+ 2018-06-14: SW Bell - make python3 compliant
  2017-09-14: SW Bell - merge yaml and pyini(json) calls to unify api
  2016-09-16: SW Bell - Add support for parsing yaml files and translating between yaml and json/pyini
   
@@ -25,6 +26,19 @@
 #System Stack
 import json
 import yaml
+
+from collections import OrderedDict
+
+def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
+    class OrderedLoader(Loader):
+        pass
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return object_pairs_hook(loader.construct_pairs(node))
+    OrderedLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        construct_mapping)
+    return yaml.load(stream, OrderedLoader)
 
 def get_config(infile, ftype='yaml'):
     """ Input - full path to config file
@@ -40,7 +54,7 @@ def get_config(infile, ftype='yaml'):
             raise RuntimeError('{0} not found'.format(infile))
     elif ftype in ['yaml']:        
         try:
-            d = yaml.load(open(infile))
+            d = ordered_load(open(infile))
         except:
             raise RuntimeError('{0} not found'.format(infile))
     else:
@@ -92,7 +106,7 @@ def yaml2pyini(infile, **kwargs):
     infile = str(infile)
     
     try:
-        d = json.dumps(yaml.load(open(infile)), **kwargs)
+        d = json.dumps(ordered_load(open(infile)), **kwargs)
 
     except:
         raise RuntimeError('{0} not found'.format(infile))
@@ -108,14 +122,14 @@ def main():
                
     args = parser.parse_args()
 
-    print args.config_file
+    print(args.config_file)
 
     if (args.config_file).split('.')[-1] in ['pyini','json']:
-        print pyini2yaml(args.config_file)
+        print(pyini2yaml(args.config_file))
     elif (args.config_file).split('.')[-1] == 'yaml':
-        print yaml2pyini(args.config_file, sort_keys=True, indent=4)
+        print(yaml2pyini(args.config_file, sort_keys=True, indent=4))
     else:
-        print "only pyini and yaml endings are accepted"
+        print("only pyini and yaml endings are accepted")
 
 if __name__ == "__main__":
     main()
