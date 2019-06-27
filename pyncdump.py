@@ -47,7 +47,11 @@ __keywords__ = 'netCDF','meta','header'
    
 
 """---------------------------------- Main --------------------------------------------"""
-
+try:
+    os.system('clear')
+except:
+    pass
+    
 parser = argparse.ArgumentParser(description='Summary of input .nc file.')
 parser.add_argument('infile', metavar='infile', type=str,
                help='input file path')
