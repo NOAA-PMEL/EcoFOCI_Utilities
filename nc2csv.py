@@ -26,8 +26,8 @@
 
  Compatibility:
  ==============
- python >=3.6 ?
- python 2.7 
+ python >=3.6 ? Fails (numpy datetime error in EPIC time conversion)
+ python 2.7 ** tested
 """
 
 from __future__ import print_function
