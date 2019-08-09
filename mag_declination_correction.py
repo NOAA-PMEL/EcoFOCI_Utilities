@@ -28,11 +28,12 @@ import argparse
 # User Stack
 import calc.geomag.geomag.geomag as geomag
 from io_utils.EcoFOCI_db_io import EcoFOCI_db_mooring
+import io_utils.ConfigParserLocal as ConfigParserLocal
 
 __author__   = 'Shaun Bell'
 __email__    = 'shaun.bell@noaa.gov'
-__created__  = datetime.datetime(2014, 01, 13)
-__modified__ = datetime.datetime(2014, 01, 29)
+__created__  = datetime.datetime(2014, 1, 13)
+__modified__ = datetime.datetime(2014, 1, 29)
 __version__  = "0.2.0"
 __status__   = "Development"
 
@@ -70,8 +71,8 @@ args = parser.parse_args()
 if args.MooringID:
     #get information from local config file - a json formatted file
     EcoFOCI_db = EcoFOCI_db_mooring()
-    config_file = 'EcoFOCI_config/db_config/db_config_mooring.yaml'
-    (db,cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file, ftype='yaml')
+    config_file = '../EcoFOCI_Config/AtSeaPrograms/db_config_mooring.yaml'
+    (db,cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file)
 
     Mooring_Meta = EcoFOCI_db.read_mooring_summary(table='mooringdeploymentlogs', 
                                            mooringid=args.MooringID)
@@ -88,7 +89,7 @@ if args.MooringID:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat,-1 * lon,time=dep_date).dec
 
-    print ("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)
+    print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)
 
 if args.latlon:
 
@@ -102,4 +103,4 @@ if args.latlon:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat,-1 * lon,time=dep_date).dec
 
-    print ("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)
+    print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)

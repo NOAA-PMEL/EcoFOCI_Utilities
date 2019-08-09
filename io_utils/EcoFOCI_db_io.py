@@ -13,6 +13,7 @@
  History:
  --------
 
+ 2019-08-07: SW Bell - make python3 compliant
 
 """
 
@@ -22,7 +23,7 @@ import datetime
 
 __author__   = 'Shaun Bell'
 __email__    = 'shaun.bell@noaa.gov'
-__created__  = datetime.datetime(2014, 01, 29)
+__created__  = datetime.datetime(2014, 1, 29)
 __modified__ = datetime.datetime(2016, 8, 10)
 __version__  = "0.1.0"
 __status__   = "Development"
@@ -54,7 +55,7 @@ class NumpyMySQLConverter(mysql.connector.conversion.MySQLConverter):
 class EcoFOCI_db_mooring(object):
     """Class definitions to access EcoFOCI Mooring Database"""
 
-    def connect_to_DB(self, db_config_file=None, ftype='yaml'):
+    def connect_to_DB(self, db_config_file=None):
         """Try to establish database connection
 
         Parameters
@@ -63,25 +64,18 @@ class EcoFOCI_db_mooring(object):
             full path to json formatted database config file    
 
         """
-        db_config = ConfigParserLocal.get_config(db_config_file, ftype=ftype)
+        self.db_config = ConfigParserLocal.get_config(db_config_file)
         try:
-            self.db = mysql.connector.connect(**db_config)
-        except mysql.connector.Error as err:
-          """
-          if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
-          elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-          else:
-            print(err)
-          """
-          print("error - will robinson")
-          
-        self.db.set_converter_class(NumpyMySQLConverter)
-
+            self.db = mysql.connector.connect(self.db_config['host'], 
+                                      self.db_config['user'],
+                                      self.db_config['password'], 
+                                      self.db_config['database'], 
+                                      self.db_config['port'])
+        except:
+            print "db error"
+            
         # prepare a cursor object using cursor() method
-        self.cursor = self.db.cursor(dictionary=True)
-        self.prepcursor = self.db.cursor(prepared=True)
+        self.cursor = self.db.cursor(mysql.connector.cursors.DictCursor)
         return(self.db,self.cursor)
 
     def manual_connect_to_DB(self, host='localhost', user='viewer', 
@@ -112,7 +106,7 @@ class EcoFOCI_db_mooring(object):
         try:
             self.db = mysql.connector.connect(**db_config)
         except:
-            print "db error"
+            print("db error")
             
         # prepare a cursor object using cursor() method
         self.cursor = self.db.cursor(dictionary=True)
@@ -128,10 +122,10 @@ class EcoFOCI_db_mooring(object):
             sql = ("SELECT * FROM `{0}` ").format(table)
 
         if verbose:
-            print sql
+            print(sql)
 
         if verbose:
-            print sql
+            print(sql)
 
         result_dic = {}
         try:
@@ -140,7 +134,7 @@ class EcoFOCI_db_mooring(object):
                 result_dic[row['MooringID']] ={keys: row[keys] for val, keys in enumerate(row.keys())} 
             return (result_dic)
         except:
-            print "Error: unable to fetch data"
+            print("Error: unable to fetch data")
 
 
     def close(self):
