@@ -17,6 +17,7 @@
 
  History:
  ========
+ 2020-03-26: EPIC time conversion modified to support python3
  2018-07-24: replace print statements with functions and import future for py3 compatability
  2016-07-25: update EPIC to CF time routines to be in EPIC2Datetime.py and removed time calls
     in this routine.
@@ -26,8 +27,8 @@
 
  Compatibility:
  ==============
- python >=3.6 ? Fails (numpy datetime error in EPIC time conversion)
- python 2.7 ** tested
+ python >=3.7 ** tested
+ python 2.7 ** tested but no longer developed for
 """
 
 from __future__ import print_function
