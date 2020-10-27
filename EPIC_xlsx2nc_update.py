@@ -80,6 +80,8 @@ parser.add_argument(
     help="list of EPIC Keys to transfer (must be header labels in workbook)",
 )
 
+parser.add_argument("-ctd", "--ctd", action="store_true", help="from ctd profile")
+
 
 args = parser.parse_args()
 
@@ -109,11 +111,19 @@ data = df.ncreadfile_dic()
 ###replace chosen variables
 if args.EPIC_KEY:
     for var_name in args.EPIC_KEY:
-        try:
-            nchandle.variables[var_name][:, 0, 0, 0] = np.array(data_dic[var_name])
-            print("SUCCESS: {variable} updated".format(variable=var_name))
-        except:
-            print("FAIL: {variable} not updated".format(variable=var_name))
+
+        if args.ctd:
+            try:
+                nchandle.variables[var_name][0, :, 0, 0] = np.array(list(data_dic[var_name]))
+                print("SUCCESS: {variable} updated".format(variable=var_name))
+            except:
+                print("FAIL: {variable} not updated".format(variable=var_name))
+        else:
+            try:
+                nchandle.variables[var_name][:, 0, 0, 0] = np.array(data_dic[var_name])
+                print("SUCCESS: {variable} updated".format(variable=var_name))
+            except:
+                print("FAIL: {variable} not updated".format(variable=var_name))
 else:
     print("Rerun program with an EPIC_KEY chosen from the above available keys")
 
