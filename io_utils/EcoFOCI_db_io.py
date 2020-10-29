@@ -42,11 +42,11 @@ class EcoFOCI_db_Moorings(object):
 		"""
 		self.db_config = ConfigParserLocal.get_config(db_config_file)
 		try:
-		    self.db = mysql.connector.connect(self.db_config['host'], 
-		    						  self.db_config['user'],
-		    						  self.db_config['password'], 
-		    						  self.db_config['database'], 
-		    						  self.db_config['port'])
+		    self.db = mysql.connector.connect(host=self.db_config['systems']['akutan']['host'], 
+		    						  user=self.db_config['login']['user'],
+		    						  password=self.db_config['login']['password'], 
+		    						  database=self.db_config['database']['database'], 
+		    						  port=self.db_config['systems']['akutan']['port'])
 		except:
 		    print("db error")
 		    
