@@ -114,7 +114,7 @@ if args.MooringID:
     try: #python 2
         print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
     except:
-        print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
+        print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)
 
 if args.latlon:
 
@@ -131,4 +131,4 @@ if args.latlon:
     try: #python 2
         print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
     except:
-        print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
+        print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}").format(args.MooringID, lat, lon, dec)
