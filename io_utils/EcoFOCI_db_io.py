@@ -91,7 +91,7 @@ class EcoFOCI_db_Moorings(object):
 		self.cursor = self.db.cursor(dictionary=True)
 		return(self.db,self.cursor)
 
-	def read_mooring(self, table=None, MooringID=None, verbose=False):
+	def read_mooring_summary(self, table=None, MooringID=None, verbose=False):
 	    
 		sql = ("SELECT * from `{0}` WHERE `MooringID`= '{1}'").format(table, MooringID)
 
