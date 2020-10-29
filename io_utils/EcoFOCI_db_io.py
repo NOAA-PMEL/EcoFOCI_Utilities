@@ -51,7 +51,7 @@ class EcoFOCI_db_Moorings(object):
 		    print("db error")
 		    
 		# prepare a cursor object using cursor() method
-		self.cursor = self.db.cursor(mysql.connector.cursors.DictCursor)
+		self.cursor = self.db.cursor(dictionary=True)
 		return(self.db,self.cursor)
 
 	def manual_connect_to_DB(self, host='localhost', user='viewer', 
@@ -88,7 +88,7 @@ class EcoFOCI_db_Moorings(object):
 		    print("db error")
 		    
 		# prepare a cursor object using cursor() method
-		self.cursor = self.db.cursor(mysql.connector.cursors.DictCursor)
+		self.cursor = self.db.cursor(dictionary=True)
 		return(self.db,self.cursor)
 
 	def read_mooring(self, table=None, MooringID=None, verbose=False):
