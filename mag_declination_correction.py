@@ -111,9 +111,10 @@ if args.MooringID:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat, -1 * lon, time=dep_date).dec
 
-    print(
-        "At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}"
-    ).format(args.MooringID, lat, lon, dec)
+    try: #python 2
+        print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
+    except:
+        print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
 
 if args.latlon:
 
@@ -127,7 +128,7 @@ if args.latlon:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat, -1 * lon, time=dep_date).dec
 
-try: #python 2
-    print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
-except:
-    print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
+    try: #python 2
+        print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
+    except:
+        print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
