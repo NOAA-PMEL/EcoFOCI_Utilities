@@ -85,7 +85,7 @@ if args.MooringID:
     (db, cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file)
 
     Mooring_Meta = EcoFOCI_db.read_mooring_summary(
-        table="mooringdeploymentlogs", mooringid=args.MooringID
+        table="mooringdeploymentlogs", MooringID=args.MooringID
     )
     EcoFOCI_db.close()
 
