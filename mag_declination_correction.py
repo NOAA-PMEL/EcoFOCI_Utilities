@@ -27,7 +27,7 @@ import argparse
 
 # User Stack
 import calc.geomag.geomag.geomag as geomag
-from io_utils.EcoFOCI_db_io import EcoFOCI_db_mooring
+from io_utils.EcoFOCI_db_io import EcoFOCI_db_Moorings
 import io_utils.ConfigParserLocal as ConfigParserLocal
 
 __author__ = "Shaun Bell"
@@ -80,7 +80,7 @@ args = parser.parse_args()
 
 if args.MooringID:
     # get information from local config file - a json formatted file
-    EcoFOCI_db = EcoFOCI_db_mooring()
+    EcoFOCI_db = EcoFOCI_db_Moorings()
     config_file = "../EcoFOCI_Config/AtSeaPrograms/db_config_mooring.yaml"
     (db, cursor) = EcoFOCI_db.connect_to_DB(db_config_file=config_file)
 
@@ -115,6 +115,4 @@ if args.latlon:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat, -1 * lon, time=dep_date).dec
 
-    print(
-        "At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}"
-    ).format(args.MooringID, lat, lon, dec)
+    print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
