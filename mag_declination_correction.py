@@ -11,9 +11,20 @@ Background
  Calculate the magnetic declination correction for either a known EcoFOCI mooring in the 
  existing database, or for a defined latitude/longitude pair
 
+
+ Compatibility:
+ ==============
+ python >=3.6 - Tested
+ python 2.7 - Tested (but not longer supported)
+
+ Future:
+ =======
+ wrap netcdf creation by using xarray isntead of custum netcdf4 library calls
+ make database call more dynamic
+
  History:
  --------
- 
+ 2020-10-27: Migrate to python3 syntax, update mysql connector, move to akutan 
  2016-10-21: Move routine to EcoFOCI_utilities to unify program calls
 
 
@@ -24,6 +35,7 @@ import datetime
 
 # System Stack
 import argparse
+import sys
 
 # User Stack
 import calc.geomag.geomag.geomag as geomag
@@ -115,4 +127,7 @@ if args.latlon:
     t = geomag.GeoMag()
     dec = t.GeoMag(lat, -1 * lon, time=dep_date).dec
 
+try: #python 2
     print("At Mooring {0}, with lat: {1} (N) , lon: {2} (W) the declination correction is {3}".format(args.MooringID, lat, lon, dec))
+except:
+    print(f"At Mooring {args.MooringID}, with lat: {lat} (N) , lon: {lon} (W) the declination correction is {dec}")
