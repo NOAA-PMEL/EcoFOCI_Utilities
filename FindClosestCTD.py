@@ -194,7 +194,7 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-host = "pavlof"
+host = "akutan"
 
 if not args.latlon and not args.MooringID:
     print("Choose either a mooring location or a lat/lon pairing")
