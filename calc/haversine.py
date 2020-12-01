@@ -22,7 +22,7 @@ def distance(origin, destination):
     
 def nearest_point(origin, latpoints, lonpoints, grid='1d'):
     
-    if grid is '1d':
+    if grid == '1d':
         dist = np.zeros((np.shape(latpoints)[0], np.shape(lonpoints)[0]))
 
         for i, lat in enumerate(latpoints):
@@ -32,7 +32,7 @@ def nearest_point(origin, latpoints, lonpoints, grid='1d'):
         lati, loni = np.where(dist == dist.min())
         return (dist.min(), latpoints[lati[0]], lonpoints[loni[0]], lati[0], loni[0] )
 
-    elif grid is '2d':
+    elif grid == '2d':
         dist = np.zeros_like(latpoints)
 
         for i, latrow in enumerate(latpoints):
