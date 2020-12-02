@@ -17,7 +17,7 @@
 """
 
 import mysql.connector
-import ..io_utils.ConfigParserLocal as ConfigParserLocal
+import io_utils.ConfigParserLocal as ConfigParserLocal
 import datetime
 
 __author__   = 'Shaun Bell'
