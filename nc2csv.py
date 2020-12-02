@@ -57,10 +57,6 @@ __status__ = "Development"
 __keywords__ = "netCDF", "meta", "header", "csv"
 
 """---------------------------------- Main --------------------------------------------"""
-try:
-    os.system("clear")
-except:
-    pass
 
 parser = argparse.ArgumentParser(description="Convert .nc to .csv screen output")
 parser.add_argument("infile", metavar="infile", type=str, help="input file path")
