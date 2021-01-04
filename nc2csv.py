@@ -17,6 +17,7 @@
 
  History:
  ========
+ 2020-12-21: IPHC specific ctd output
  2020-03-26: EPIC time conversion modified to support python3
  2018-07-24: replace print statements with functions and import future for py3 compatability
  2016-07-25: update EPIC to CF time routines to be in EPIC2Datetime.py and removed time calls
@@ -86,8 +87,12 @@ parser.add_argument(
     "-non_epic", "--non_epic", action="store_true", help="non_epic time files"
 )
 parser.add_argument(
+    "-IPHC", "--IPHC", action="store_true", help="list of desired epic variables"
+)
+parser.add_argument(
     "-EPIC", "--epic", nargs="+", type=str, help="list of desired epic variables"
 )
+
 parser.add_argument(
     "-subset",
     "--subset",
@@ -120,7 +125,6 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-
 
 if args.timeseries and args.PointerFile:
 
@@ -628,3 +632,98 @@ if args.non_epic:
             line = line + ", " + str(data[k][i, 0, 0, 0])
 
         print(timestr + ", " + line)
+
+if args.IPHC:
+    ###nc readin/out
+    ncfile = args.infile
+    df = EcoFOCI_netCDF(ncfile)
+    global_atts = df.get_global_atts()
+    vars_dic = df.get_vars()
+    data = df.ncreadfile_dic()
+    ### get and print epic ctd data
+
+    cast = (args.infile).split('/')[-1][3:6]
+    # header
+
+    header = "Year, Latitude(Deg), Longitude(Deg), Station, VesselCode, Cast, WaterDepth(m), CastDate, Pressure(db)"
+    for k in (args.epic):
+        if k in ["time", "time2"]:
+            pass
+        elif k in ["lat", "lon", "latitude", "longitude", "time01", "time012"]:
+            pass
+        elif k in ["depth", "dep", "pressure"]:
+            pass
+        elif k in args.epic:
+            if k == 'T_28':
+                header = header + ", " + 'Temperature(C)'
+            if k == 'S_41':
+                header = header + ", " + 'Salinity'
+            if k == 'Chl_933':
+                header = header + ", " + 'Chlorophyll'
+            if k == 'pH_159':
+                header = header + ", " + 'pH'
+            if k == 'O_60':
+                header = header + ", " + 'Oxygen(ML/L)'            
+            if k == 'OST_62':
+                header = header + ", " + 'Oxygen(%Saturation)'
+            if k == 'O_65':
+                header = header + ", " + 'Oxygen(microMol/kg)'
+            if k == 'ST_70':
+                header = header + ", " + 'Sigma-T(kg/m**3)'
+    print(header)
+
+    
+
+    vert_var = ""
+    for param in ["dep", "depth", "pressure"]:
+        if not len(vert_var) > 0:
+            vert_var = data.get(param, "")
+
+    try:
+        vert_var
+    except:
+        "No recognized depth parameter"
+
+    for i, val in enumerate(vert_var):
+        timestr = datetime.datetime.strftime(
+            EPIC2Datetime([data["time"][0]], [data["time2"][0]])[0],
+            "%d-%b-%Y",
+        )
+        timestr_year = datetime.datetime.strftime(
+            EPIC2Datetime([data["time"][0]], [data["time2"][0]])[0],
+            "%Y",
+        )
+
+        line = ""
+        for k in (args.epic):
+            if k in ["time", "time2"]:
+                pass
+            elif k in ["lat", "latitude", "time01", "time012"]:
+                pass
+            elif k in ["longitude", "lon"]:
+                pass
+            elif k in ["depth", "dep", "pressure"]:
+                pass
+            elif k in args.epic:
+                if (data[k][0, i, 0, 0] > 1e30):
+                    line = line + ", " + '99999'
+                elif k == 'ST_70':
+                    line = line + ", " + "{:5.3f}".format(data[k][0, i, 0, 0])
+                else:
+                    line = line + ", " + str(data[k][0, i, 0, 0])
+
+        dep_data = ""
+        for k in vars_dic.keys():
+            if k in ["depth", "dep", "pressure"]:
+                dep_data = dep_data + ", " + str(data[k][i])
+
+        loc_data = ""
+        for k in vars_dic.keys():
+            if k in ["lat", "latitude", "time01", "time012"]:
+                loc_data = loc_data + ", " + "{:7.4f}".format(data[k][0])
+            elif k in ["longitude", "lon"]:
+                loc_data = loc_data + ", " + "{:7.4f}".format(-1* data[k][0])
+
+        print(timestr_year + loc_data + ", " + global_atts["STNNO"] + ", " + global_atts["VSLCDE"] + ", " + cast + ", "  + "{:4.0f}".format(global_atts["WATER_DEPTH"]) + ", " + timestr + dep_data + line)
+
+    df.close()
